@@ -1,6 +1,13 @@
 import { Star, Lock, CheckCircle } from 'lucide-react'
+import { Action } from '../types'
 
-export default function ActionCard({ action, onPerform, disabled }) {
+interface ActionCardProps {
+  action: Action
+  onPerform: (actionId: string) => void
+  disabled: boolean
+}
+
+export default function ActionCard({ action, onPerform, disabled }: ActionCardProps) {
   return (
     <div className={`bg-white rounded-lg shadow-sm border border-gray-200 p-6 ${
       !action.isActive ? 'opacity-60' : ''

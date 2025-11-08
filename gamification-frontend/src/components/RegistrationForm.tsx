@@ -1,11 +1,17 @@
-import { useState } from 'react'
+import { useState, FormEvent } from 'react'
 import { UserPlus } from 'lucide-react'
+import { RegisterUserData } from '../types'
 
-export default function RegistrationForm({ onRegister, eventName }) {
+interface RegistrationFormProps {
+  onRegister: (data: RegisterUserData) => void
+  eventName: string
+}
+
+export default function RegistrationForm({ onRegister, eventName }: RegistrationFormProps) {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
     if (name && email) {
       onRegister({ name, email })

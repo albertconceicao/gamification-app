@@ -24,6 +24,7 @@ export default function AdminPanel() {
     try {
       setLoading(true)
       const data = await getEvents()
+      console.log(data)
       setEvents(data.data || [])
     } catch (err) {
       console.error('Erro ao carregar eventos:', err)
