@@ -1,0 +1,13 @@
+node_modules
+dist
+.env
+.git
+.gitignore
+*.log
+npm-debug.log*
+README.md
+QUICK_START.md
+PROJECT_SUMMARY.md
+frontend-example.js
+requests.http
+test-api.sh

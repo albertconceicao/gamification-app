@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  # API
+  api:
+    build: .
+    container_name: points-api
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - MONGODB_URI=mongodb://mongo:27017/points-db
+    depends_on:
+      - mongo
+    restart: unless-stopped
+
+  # MongoDB
+  mongo:
+    image: mongo:7
+    container_name: points-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    restart: unless-stopped
+
+volumes:
+  mongo-data:

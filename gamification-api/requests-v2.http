@@ -1,0 +1,328 @@
+### API v2.0 - Exemplos de Requisições
+
+### ========================================
+### 1. EVENTOS
+### ========================================
+
+### Health Check
+GET http://localhost:3000/
+
+###
+
+### Listar todos os eventos
+GET http://localhost:3000/api/events
+
+###
+
+### Criar novo evento
+POST http://localhost:3000/api/events
+Content-Type: application/json
+
+{
+  "name": "Black Friday 2024",
+  "description": "Campanha de pontos da Black Friday",
+  "startDate": "2024-11-01T00:00:00.000Z",
+  "endDate": "2024-11-30T23:59:59.000Z",
+  "isActive": true
+}
+
+###
+
+### Buscar evento específico (substitua EVENT_ID)
+GET http://localhost:3000/api/events/EVENT_ID
+
+###
+
+### Atualizar evento
+PUT http://localhost:3000/api/events/EVENT_ID
+Content-Type: application/json
+
+{
+  "name": "Black Friday 2024 - Atualizado",
+  "isActive": true
+}
+
+###
+
+### Ranking do evento
+GET http://localhost:3000/api/events/EVENT_ID/ranking
+
+###
+
+### Remover evento (só funciona se não tiver dados vinculados)
+DELETE http://localhost:3000/api/events/EVENT_ID
+
+###
+
+### ========================================
+### 2. AÇÕES
+### ========================================
+
+### Listar ações de um evento
+GET http://localhost:3000/api/events/EVENT_ID/actions
+
+###
+
+### Criar ação - Cadastro completo (única vez)
+POST http://localhost:3000/api/events/EVENT_ID/actions
+Content-Type: application/json
+
+{
+  "name": "Completar cadastro",
+  "description": "Preencher todos os dados do perfil",
+  "points": 20,
+  "allowMultiple": false,
+  "isActive": true
+}
+
+###
+
+### Criar ação - Compra (múltiplas vezes)
+POST http://localhost:3000/api/events/EVENT_ID/actions
+Content-Type: application/json
+
+{
+  "name": "Realizar compra acima de R$ 100",
+  "description": "Fazer uma compra com valor acima de R$ 100",
+  "points": 50,
+  "allowMultiple": true,
+  "isActive": true
+}
+
+###
+
+### Criar ação - Compartilhamento (única vez)
+POST http://localhost:3000/api/events/EVENT_ID/actions
+Content-Type: application/json
+
+{
+  "name": "Compartilhar nas redes sociais",
+  "description": "Compartilhar a campanha no Instagram ou Facebook",
+  "points": 10,
+  "allowMultiple": false,
+  "isActive": true
+}
+
+###
+
+### Criar ação - Indicação de amigo
+POST http://localhost:3000/api/events/EVENT_ID/actions
+Content-Type: application/json
+
+{
+  "name": "Indicar um amigo",
+  "description": "Convidar um amigo para participar",
+  "points": 30,
+  "allowMultiple": true,
+  "isActive": true
+}
+
+###
+
+### Criar ação - Avaliação de produto
+POST http://localhost:3000/api/events/EVENT_ID/actions
+Content-Type: application/json
+
+{
+  "name": "Avaliar produto",
+  "description": "Deixar uma avaliação de produto comprado",
+  "points": 15,
+  "allowMultiple": true,
+  "isActive": true
+}
+
+###
+
+### Buscar ação específica
+GET http://localhost:3000/api/actions/ACTION_ID
+
+###
+
+### Atualizar ação
+PUT http://localhost:3000/api/actions/ACTION_ID
+Content-Type: application/json
+
+{
+  "points": 25,
+  "allowMultiple": true,
+  "isActive": false
+}
+
+###
+
+### Remover ação (só funciona se não foi realizada por ninguém)
+DELETE http://localhost:3000/api/actions/ACTION_ID
+
+###
+
+### ========================================
+### 3. USUÁRIOS
+### ========================================
+
+### Listar todos os usuários
+GET http://localhost:3000/api/users
+
+###
+
+### Registrar usuário no evento
+POST http://localhost:3000/api/events/EVENT_ID/users
+Content-Type: application/json
+
+{
+  "name": "João Silva",
+  "email": "joao@example.com"
+}
+
+###
+
+### Registrar outro usuário
+POST http://localhost:3000/api/events/EVENT_ID/users
+Content-Type: application/json
+
+{
+  "name": "Maria Santos",
+  "email": "maria@example.com"
+}
+
+###
+
+### Buscar usuário específico
+GET http://localhost:3000/api/users/USER_ID
+
+###
+
+### Histórico completo de ações do usuário
+GET http://localhost:3000/api/users/USER_ID/history
+
+###
+
+### ========================================
+### 4. PONTUAÇÃO (Usuário realiza ações)
+### ========================================
+
+### Usuário completa cadastro (ação única)
+POST http://localhost:3000/api/users/USER_ID/actions/ACTION_ID_CADASTRO
+Content-Type: application/json
+
+{}
+
+###
+
+### Usuário realiza compra (ação múltipla)
+POST http://localhost:3000/api/users/USER_ID/actions/ACTION_ID_COMPRA
+Content-Type: application/json
+
+{}
+
+###
+
+### Usuário compartilha nas redes (ação única)
+POST http://localhost:3000/api/users/USER_ID/actions/ACTION_ID_COMPARTILHAR
+Content-Type: application/json
+
+{}
+
+###
+
+### Usuário indica amigo (ação múltipla)
+POST http://localhost:3000/api/users/USER_ID/actions/ACTION_ID_INDICACAO
+Content-Type: application/json
+
+{}
+
+###
+
+### Usuário avalia produto (ação múltipla)
+POST http://localhost:3000/api/users/USER_ID/actions/ACTION_ID_AVALIACAO
+Content-Type: application/json
+
+{}
+
+###
+
+### ========================================
+### FLUXO COMPLETO DE TESTE
+### ========================================
+
+### 1. Criar evento
+POST http://localhost:3000/api/events
+Content-Type: application/json
+
+{
+  "name": "Teste Completo",
+  "description": "Evento de teste",
+  "isActive": true
+}
+
+# Copie o _id do evento criado e substitua EVENT_ID abaixo
+
+###
+
+### 2. Criar ação de cadastro
+POST http://localhost:3000/api/events/EVENT_ID/actions
+Content-Type: application/json
+
+{
+  "name": "Cadastro",
+  "points": 20,
+  "allowMultiple": false
+}
+
+# Copie o _id da ação e substitua ACTION_ID_CADASTRO
+
+###
+
+### 3. Criar ação de compra
+POST http://localhost:3000/api/events/EVENT_ID/actions
+Content-Type: application/json
+
+{
+  "name": "Compra",
+  "points": 50,
+  "allowMultiple": true
+}
+
+# Copie o _id da ação e substitua ACTION_ID_COMPRA
+
+###
+
+### 4. Registrar usuário
+POST http://localhost:3000/api/events/EVENT_ID/users
+Content-Type: application/json
+
+{
+  "name": "Teste User",
+  "email": "teste@example.com"
+}
+
+# Copie o _id do usuário e substitua USER_ID
+
+###
+
+### 5. Usuário completa cadastro
+POST http://localhost:3000/api/users/USER_ID/actions/ACTION_ID_CADASTRO
+
+###
+
+### 6. Usuário faz primeira compra
+POST http://localhost:3000/api/users/USER_ID/actions/ACTION_ID_COMPRA
+
+###
+
+### 7. Usuário faz segunda compra (deve funcionar pois allowMultiple: true)
+POST http://localhost:3000/api/users/USER_ID/actions/ACTION_ID_COMPRA
+
+###
+
+### 8. Usuário tenta completar cadastro novamente (deve falhar pois allowMultiple: false)
+POST http://localhost:3000/api/users/USER_ID/actions/ACTION_ID_CADASTRO
+
+###
+
+### 9. Ver dados do usuário com histórico
+GET http://localhost:3000/api/users/USER_ID
+
+###
+
+### 10. Ver ranking do evento
+GET http://localhost:3000/api/events/EVENT_ID/ranking

@@ -1,0 +1,75 @@
+### Health Check
+GET http://localhost:3000/
+
+###
+
+### Listar todos os usuários
+GET http://localhost:3000/api/users
+
+###
+
+### Registrar novo usuário
+POST http://localhost:3000/api/users
+Content-Type: application/json
+
+{
+  "name": "João Silva",
+  "email": "joao@example.com"
+}
+
+###
+
+### Registrar outro usuário
+POST http://localhost:3000/api/users
+Content-Type: application/json
+
+{
+  "name": "Maria Santos",
+  "email": "maria@example.com"
+}
+
+###
+
+### Buscar usuário específico (substitua o ID)
+GET http://localhost:3000/api/users/SUBSTITUA_PELO_ID_DO_USUARIO
+
+###
+
+### Adicionar pontos - ação padrão (1 ponto)
+POST http://localhost:3000/api/users/SUBSTITUA_PELO_ID_DO_USUARIO/action
+Content-Type: application/json
+
+{}
+
+###
+
+### Adicionar pontos - comentário (5 pontos)
+POST http://localhost:3000/api/users/SUBSTITUA_PELO_ID_DO_USUARIO/action
+Content-Type: application/json
+
+{
+  "points": 5,
+  "actionType": "comment"
+}
+
+###
+
+### Adicionar pontos - compartilhamento (10 pontos)
+POST http://localhost:3000/api/users/SUBSTITUA_PELO_ID_DO_USUARIO/action
+Content-Type: application/json
+
+{
+  "points": 10,
+  "actionType": "share"
+}
+
+###
+
+### Adicionar pontos - compra (50 pontos)
+POST http://localhost:3000/api/users/SUBSTITUA_PELO_ID_DO_USUARIO/action
+Content-Type: application/json
+
+{
+  "points": 50,
+  "actionType": "purchase"
+}
