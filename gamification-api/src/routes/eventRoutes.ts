@@ -66,7 +66,7 @@ router.get('/events/:eventId', async (req: Request, res: Response) => {
 // POST /api/events - Cria um novo evento
 router.post('/events', async (req: Request, res: Response) => {
   try {
-    const { name, description, startDate, endDate, isActive } = req.body;
+    const { name, description, startDate, endDate, isActive, swoogoEventId } = req.body;
 
     if (!name) {
       return res.status(400).json({
@@ -80,7 +80,8 @@ router.post('/events', async (req: Request, res: Response) => {
       description,
       startDate: startDate || new Date(),
       endDate,
-      isActive: isActive !== undefined ? isActive : true
+      isActive: isActive !== undefined ? isActive : true,
+      swoogoEventId
     });
 
     res.status(201).json({
@@ -101,7 +102,7 @@ router.post('/events', async (req: Request, res: Response) => {
 router.put('/events/:eventId', async (req: Request, res: Response) => {
   try {
     const { eventId } = req.params;
-    const { name, description, startDate, endDate, isActive } = req.body;
+    const { name, description, startDate, endDate, isActive, swoogoEventId } = req.body;
 
     const event = await Event.findById(eventId);
     
@@ -118,6 +119,7 @@ router.put('/events/:eventId', async (req: Request, res: Response) => {
     if (startDate !== undefined) event.startDate = startDate;
     if (endDate !== undefined) event.endDate = endDate;
     if (isActive !== undefined) event.isActive = isActive;
+    if (swoogoEventId !== undefined) event.swoogoEventId = swoogoEventId;
 
     await event.save();
 
