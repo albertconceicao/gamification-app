@@ -3,6 +3,7 @@ import mongoose, { Document, Schema } from 'mongoose';
 export interface IUser extends Document {
   eventId: mongoose.Types.ObjectId;
   first_name: string;
+  swoogoUserId: string;
   email: string;
   points: number;
   registeredAt: Date;
@@ -20,6 +21,13 @@ const UserSchema: Schema = new Schema({
     type: String,
     required: true,
     trim: true
+  },
+  swoogoUserId: {
+    type: String,
+    required: true,
+    trim: true,
+    unique: true,
+    index: true
   },
   email: {
     type: String,

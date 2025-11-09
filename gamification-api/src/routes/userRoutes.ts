@@ -29,22 +29,24 @@ router.get('/users', async (req: Request, res: Response) => {
 // POST /api/events/users/create - Registra um novo usuário em um evento
 router.post('/events/users/create', validateEventExists, async (req: Request, res: Response) => {
   try {
-    const { first_name, email, swoogoEventId } = req.body;
+    const { first_name, email, swoogoEventId, id } = req.body;
     const event = (req as any).event; // Vem do middleware
 
-    if (!first_name || !email) {
+    if (!first_name || !email || !id) {
       return res.status(400).json({
         success: false,
-        message: 'Name and email are required'
+        message: 'Name, email and id are required'
       });
     }
 
     // Verifica se o usuário já existe neste evento
-    const existingUser = await User.findOne({ eventId: event._id, email });
+    const existingUser = await User.findOne({ eventId: event._id, swoogoUserId: id });
     if (existingUser) {
-      return res.status(409).json({
-        success: false,
-        message: 'User already registered in this event with this email'
+      await User.updateOne({ eventId: event._id, swoogoUserId: id }, { $set: { first_name, email } });
+      return res.status(200).json({
+        success: true,
+        message: 'User updated successfully',
+        data: existingUser
       });
     }
 
@@ -53,6 +55,7 @@ router.post('/events/users/create', validateEventExists, async (req: Request, re
       swoogoEventId,
       first_name,
       email,
+      swoogoUserId: id,
       points: 0
     });
 
@@ -158,6 +161,7 @@ router.post('/users/:userId/actions/:actionId', async (req: Request, res: Respon
       data: {
         userId: user._id,
         first_name: user.first_name,
+        swoogoUserId: user.swoogoUserId,
         action: {
           id: action._id,
           name: action.name,
@@ -236,6 +240,7 @@ router.get('/users/:userId/history', async (req: Request, res: Response) => {
       user: {
         id: user._id,
         first_name: user.first_name,
+        swoogoUserId: user.swoogoUserId,
         totalPoints: user.points
       },
       count: history.length,
