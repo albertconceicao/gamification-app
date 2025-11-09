@@ -2,7 +2,7 @@ import mongoose, { Document, Schema } from 'mongoose';
 
 export interface IUser extends Document {
   eventId: mongoose.Types.ObjectId;
-  name: string;
+  first_name: string;
   email: string;
   points: number;
   registeredAt: Date;
@@ -16,7 +16,7 @@ const UserSchema: Schema = new Schema({
     required: true,
     index: true
   },
-  name: {
+  first_name: {
     type: String,
     required: true,
     trim: true
