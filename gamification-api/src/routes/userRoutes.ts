@@ -29,10 +29,10 @@ router.get('/users', async (req: Request, res: Response) => {
 // POST /api/events/users/create - Registra um novo usuário em um evento
 router.post('/events/users/create', validateEventExists, async (req: Request, res: Response) => {
   try {
-    const { name, email, swoogoEventId } = req.body;
+    const { first_name, email, swoogoEventId } = req.body;
     const event = (req as any).event; // Vem do middleware
 
-    if (!name || !email) {
+    if (!first_name || !email) {
       return res.status(400).json({
         success: false,
         message: 'Name and email are required'
@@ -51,7 +51,7 @@ router.post('/events/users/create', validateEventExists, async (req: Request, re
     const user = await User.create({
       eventId: event._id,
       swoogoEventId,
-      name,
+      first_name,
       email,
       points: 0
     });
