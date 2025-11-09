@@ -26,17 +26,16 @@ router.get('/users', async (req: Request, res: Response) => {
   }
 });
 
-// POST /api/events/:eventId/users - Registra um novo usuário em um evento
-router.post('/events/:eventId/users', validateEventExists, async (req: Request, res: Response) => {
+// POST /api/events/users/create - Registra um novo usuário em um evento
+router.post('/events/users/create', validateEventExists, async (req: Request, res: Response) => {
   try {
-    const { eventId } = req.params;
-    const { name, email } = req.body;
+    const { name, email, eventId } = req.body;
     const event = (req as any).event; // Vem do middleware
 
     if (!name || !email) {
       return res.status(400).json({
         success: false,
-        message: 'Nome e email são obrigatórios'
+        message: 'Name and email are required'
       });
     }
 
@@ -45,7 +44,7 @@ router.post('/events/:eventId/users', validateEventExists, async (req: Request, 
     if (existingUser) {
       return res.status(409).json({
         success: false,
-        message: 'Usuário já registrado neste evento com este email'
+        message: 'User already registered in this event with this email'
       });
     }
 
@@ -58,14 +57,14 @@ router.post('/events/:eventId/users', validateEventExists, async (req: Request, 
 
     res.status(201).json({
       success: true,
-      message: 'Usuário registrado com sucesso',
+      message: 'User registered successfully',
       data: user
     });
   } catch (error) {
-    console.error('Erro ao registrar usuário:', error);
+    console.error('Error registering user:', error);
     res.status(500).json({
       success: false,
-      message: 'Erro ao registrar usuário'
+      message: 'Error registering user'
     });
   }
 });
@@ -80,7 +79,7 @@ router.post('/users/:userId/actions/:actionId', async (req: Request, res: Respon
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: 'Usuário não encontrado'
+        message: 'User not found'
       });
     }
 
@@ -89,17 +88,17 @@ router.post('/users/:userId/actions/:actionId', async (req: Request, res: Respon
     if (!event) {
       return res.status(404).json({
         success: false,
-        message: 'Evento não encontrado no banco de dados',
-        tip: 'O evento pode ter sido removido'
+        message: 'Event not found in database',
+        tip: 'The event may have been removed'
       });
     }
 
     if (!event.isActive) {
       return res.status(400).json({
         success: false,
-        message: 'Este evento não está ativo',
+        message: 'Event is not active',
         eventName: event.name,
-        tip: 'Não é possível realizar ações em eventos inativos'
+        tip: 'Actions cannot be performed in inactive events'
       });
     }
 
@@ -108,7 +107,7 @@ router.post('/users/:userId/actions/:actionId', async (req: Request, res: Respon
     if (!action) {
       return res.status(404).json({
         success: false,
-        message: 'Ação não encontrada'
+        message: 'Action not found'
       });
     }
 
@@ -116,7 +115,7 @@ router.post('/users/:userId/actions/:actionId', async (req: Request, res: Respon
     if (!action.isActive) {
       return res.status(400).json({
         success: false,
-        message: 'Esta ação não está mais ativa'
+        message: 'Action is not active'
       });
     }
 
@@ -124,7 +123,7 @@ router.post('/users/:userId/actions/:actionId', async (req: Request, res: Respon
     if (action.eventId.toString() !== user.eventId.toString()) {
       return res.status(400).json({
         success: false,
-        message: 'Esta ação não pertence ao evento do usuário'
+        message: 'Action does not belong to the user event'
       });
     }
 
@@ -134,7 +133,7 @@ router.post('/users/:userId/actions/:actionId', async (req: Request, res: Respon
       if (existingUserAction) {
         return res.status(400).json({
           success: false,
-          message: 'Você já realizou esta ação e ela não permite múltiplas execuções'
+          message: 'You have already performed this action and it does not allow multiple executions'
         });
       }
     }
