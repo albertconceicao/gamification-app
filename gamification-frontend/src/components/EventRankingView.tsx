@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { ArrowLeft, Trophy, Medal, Award, Crown, TrendingUp, Users, Calendar, Download } from 'lucide-react'
+import { ArrowLeft, Trophy, Medal, Award, TrendingUp, Users, Calendar, Download } from 'lucide-react'
 import { getEventRanking } from '../services/api'
 import type { Event, User } from '../types'
 
@@ -23,7 +23,7 @@ export default function EventRankingView({ event, onBack }: EventRankingViewProp
       const data = await getEventRanking(event._id)
       setRanking(data.data || [])
     } catch (err) {
-      console.error('Erro ao carregar ranking:', err)
+      console.error('Error loading ranking:', err)
     } finally {
       setLoading(false)
     }
@@ -58,7 +58,7 @@ export default function EventRankingView({ event, onBack }: EventRankingViewProp
   const averagePoints = ranking.length > 0 ? Math.round(totalPoints / ranking.length) : 0
 
   const exportToCSV = () => {
-    const headers = ['Posição', 'Nome', 'Email', 'Pontos', 'Última Ação']
+    const headers = ['Position', 'Name', 'Email', 'Points', 'Last Action']
     const rows = ranking.map((user, index) => [
       index + 1,
       user.name,
@@ -83,20 +83,15 @@ export default function EventRankingView({ event, onBack }: EventRankingViewProp
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-2">
           <button
             onClick={onBack}
-            className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+            className="p-2 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-full transition-colors"
+            title="Back"
           >
             <ArrowLeft className="h-5 w-5" />
           </button>
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900 flex items-center">
-              <Trophy className="h-7 w-7 text-indigo-600 mr-2" />
-              Ranking do Evento
-            </h2>
-            <p className="text-gray-600 mt-1">{event.name}</p>
-          </div>
+          <h1 className="text-2xl font-bold text-gray-900">Event Ranking</h1>
         </div>
         <button
           onClick={exportToCSV}
@@ -104,7 +99,7 @@ export default function EventRankingView({ event, onBack }: EventRankingViewProp
           className="flex items-center space-x-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <Download className="h-5 w-5" />
-          <span>Exportar CSV</span>
+          <span>Export to CSV</span>
         </button>
       </div>
 
@@ -113,7 +108,7 @@ export default function EventRankingView({ event, onBack }: EventRankingViewProp
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Total de Participantes</p>
+              <p className="text-sm font-medium text-gray-600">Total Participants</p>
               <p className="text-3xl font-bold text-gray-900 mt-2">{ranking.length}</p>
             </div>
             <Users className="h-12 w-12 text-indigo-600 opacity-20" />
@@ -123,8 +118,8 @@ export default function EventRankingView({ event, onBack }: EventRankingViewProp
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Pontos Totais</p>
-              <p className="text-3xl font-bold text-gray-900 mt-2">{totalPoints.toLocaleString('pt-BR')}</p>
+              <p className="text-sm font-medium text-gray-600">Total Points</p>
+              <p className="text-3xl font-bold text-gray-900 mt-2">{totalPoints.toLocaleString('en-US')}</p>
             </div>
             <TrendingUp className="h-12 w-12 text-green-600 opacity-20" />
           </div>
@@ -133,8 +128,8 @@ export default function EventRankingView({ event, onBack }: EventRankingViewProp
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Média de Pontos</p>
-              <p className="text-3xl font-bold text-gray-900 mt-2">{averagePoints.toLocaleString('pt-BR')}</p>
+              <p className="text-sm font-medium text-gray-600">Average Points</p>
+              <p className="text-3xl font-bold text-gray-900 mt-2">{averagePoints.toLocaleString('en-US')}</p>
             </div>
             <Trophy className="h-12 w-12 text-yellow-600 opacity-20" />
           </div>
@@ -142,22 +137,22 @@ export default function EventRankingView({ event, onBack }: EventRankingViewProp
       </div>
 
       {/* Filters */}
-      <div className="flex items-center space-x-2">
+      <div className="flex flex-wrap gap-2 mb-6">
         <button
           onClick={() => setFilter('all')}
-          className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+          className={`px-3 py-1.5 text-sm font-medium rounded-full ${
             filter === 'all'
-              ? 'bg-indigo-600 text-white'
+              ? 'bg-indigo-100 text-indigo-800'
               : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
           }`}
         >
-          Todos ({ranking.length})
+          All
         </button>
         <button
           onClick={() => setFilter('top10')}
-          className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+          className={`px-3 py-1.5 text-sm font-medium rounded-full ${
             filter === 'top10'
-              ? 'bg-indigo-600 text-white'
+              ? 'bg-indigo-100 text-indigo-800'
               : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
           }`}
         >
@@ -165,9 +160,9 @@ export default function EventRankingView({ event, onBack }: EventRankingViewProp
         </button>
         <button
           onClick={() => setFilter('top50')}
-          className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+          className={`px-3 py-1.5 text-sm font-medium rounded-full ${
             filter === 'top50'
-              ? 'bg-indigo-600 text-white'
+              ? 'bg-indigo-100 text-indigo-800'
               : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
           }`}
         >
@@ -179,26 +174,16 @@ export default function EventRankingView({ event, onBack }: EventRankingViewProp
       <div className="bg-white rounded-lg shadow-sm border border-gray-200">
         <div className="p-6 border-b border-gray-200">
           <h3 className="text-lg font-semibold text-gray-900">
-            Classificação ({filteredRanking.length} participantes)
+            Ranking ({filteredRanking.length} participants)
           </h3>
         </div>
 
         {loading ? (
-          <div className="p-12 text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
-            <p className="text-gray-600 mt-4">Carregando ranking...</p>
+          <div className="flex flex-col items-center justify-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+            <p className="mt-4 text-gray-600">Loading ranking...</p>
           </div>
-        ) : ranking.length === 0 ? (
-          <div className="p-12 text-center">
-            <Users className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
-              Nenhum participante ainda
-            </h3>
-            <p className="text-gray-600">
-              O ranking aparecerá quando os usuários começarem a ganhar pontos
-            </p>
-          </div>
-        ) : (
+        ) : filteredRanking.length > 0 ? (
           <div className="divide-y divide-gray-200">
             {/* Top 3 - Destaque */}
             {filteredRanking.slice(0, 3).map((user, index) => (
@@ -218,22 +203,28 @@ export default function EventRankingView({ event, onBack }: EventRankingViewProp
                       {getMedalIcon(index)}
                     </div>
                     <div>
-                      <div className="flex items-center space-x-2">
-                        <p className="text-xl font-bold text-gray-900">{user.name}</p>
-                        {index === 0 && <Crown className="h-5 w-5 text-yellow-500 fill-yellow-500" />}
+                      <div className="flex items-center">
+                        <span className="text-sm font-medium text-gray-500">
+                          {index + 1}º
+                        </span>
                       </div>
-                      <p className="text-sm text-gray-600">{user.email}</p>
+                      <h3 className="text-sm font-medium text-gray-900 truncate">
+                        {user.name}
+                      </h3>
+                      <p className="text-xs text-gray-500 truncate">
+                        {user.email}
+                      </p>
                       {user.lastAction && (
                         <div className="flex items-center text-xs text-gray-500 mt-1">
                           <Calendar className="h-3 w-3 mr-1" />
-                          Última ação: {new Date(user.lastAction).toLocaleDateString('pt-BR')}
+                          Last action: {new Date(user.lastAction).toLocaleDateString('en-US')}
                         </div>
                       )}
                     </div>
                   </div>
-                  <div className="text-right">
+                  <div className="min-w-0">
                     <p className="text-4xl font-bold text-indigo-600">{user.points}</p>
-                    <p className="text-sm text-gray-500">pontos</p>
+                    <p className="text-xs text-gray-500">points</p>
                   </div>
                 </div>
               </div>
@@ -255,24 +246,38 @@ export default function EventRankingView({ event, onBack }: EventRankingViewProp
                         </span>
                       </div>
                       <div>
-                        <p className="font-semibold text-gray-900">{user.name}</p>
-                        <p className="text-sm text-gray-500">{user.email}</p>
+                        <h3 className="text-sm font-medium text-gray-900 truncate">
+                          {user.name}
+                        </h3>
+                        <p className="text-xs text-gray-500 truncate">
+                          {user.email}
+                        </p>
                         {user.lastAction && (
-                          <div className="flex items-center text-xs text-gray-400 mt-1">
+                          <div className="flex items-center text-xs text-gray-500 mt-1">
                             <Calendar className="h-3 w-3 mr-1" />
-                            {new Date(user.lastAction).toLocaleDateString('pt-BR')}
+                            Last action: {new Date(user.lastAction).toLocaleDateString('en-US')}
                           </div>
                         )}
                       </div>
                     </div>
-                    <div className="text-right">
+                    <div className="min-w-0">
                       <p className="text-2xl font-bold text-indigo-600">{user.points}</p>
-                      <p className="text-xs text-gray-500">pontos</p>
+                      <p className="text-xs text-gray-500">points</p>
                     </div>
                   </div>
                 </div>
               )
             })}
+          </div>
+        ) : (
+          <div className="p-12 text-center">
+            <Users className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-gray-900 mb-2">
+              No participants yet
+            </h3>
+            <p className="text-gray-600">
+              View participant rankings for <span className="font-semibold">{event.name}</span>
+            </p>
           </div>
         )}
       </div>

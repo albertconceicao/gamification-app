@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Target, X, Save, AlertCircle, Repeat } from 'lucide-react'
+import { Target, X, Save, AlertCircle } from 'lucide-react'
 import { createAction, updateAction } from '../services/api'
 import type { CreateActionData, UpdateActionData, Action } from '../types'
 
@@ -29,12 +29,12 @@ export default function ActionForm({ eventId, eventName, action, onClose, onActi
     setError(null)
 
     if (!formData.name?.trim()) {
-      setError('Nome da ação é obrigatório')
+      setError('Action name is required')
       return
     }
 
     if ((formData.points || 0) <= 0) {
-      setError('Pontos devem ser maior que zero')
+      setError('Points must be greater than zero')
       return
     }
 
@@ -50,8 +50,8 @@ export default function ActionForm({ eventId, eventName, action, onClose, onActi
         onClose()
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || `Erro ao ${isEditMode ? 'atualizar' : 'criar'} ação`)
-      console.error(`Erro ao ${isEditMode ? 'atualizar' : 'criar'} ação:`, err)
+      setError(err.response?.data?.message || `Error ${isEditMode ? 'updating' : 'creating'} action`)
+      console.error(`Error ${isEditMode ? 'updating' : 'creating'} action:`, err)
     } finally {
       setLoading(false)
     }
@@ -70,10 +70,12 @@ export default function ActionForm({ eventId, eventName, action, onClose, onActi
             <div className="flex items-center space-x-3 mb-1">
               <Target className="h-6 w-6 text-indigo-600" />
               <h2 className="text-2xl font-bold text-gray-900">
-                {isEditMode ? 'Editar Ação' : 'Criar Nova Ação'}
+                {isEditMode ? 'Edit Action' : 'New Action'}
               </h2>
             </div>
-            <p className="text-sm text-gray-600">Evento: {eventName}</p>
+            <p className="text-sm text-gray-500">
+              Event: <span className="font-medium">{eventName}</span>
+            </p>
           </div>
           <button
             onClick={onClose}
@@ -90,7 +92,7 @@ export default function ActionForm({ eventId, eventName, action, onClose, onActi
             <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start space-x-3">
               <AlertCircle className="h-5 w-5 text-red-600 mt-0.5" />
               <div>
-                <h3 className="text-sm font-medium text-red-800">Erro</h3>
+                <h3 className="text-sm font-medium text-red-800">Error</h3>
                 <p className="text-sm text-red-700 mt-1">{error}</p>
               </div>
             </div>
@@ -98,135 +100,132 @@ export default function ActionForm({ eventId, eventName, action, onClose, onActi
 
           {/* Nome da Ação */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Nome da Ação *
+            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+              Action Name <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
+              id="name"
               value={formData.name}
               onChange={(e) => handleChange('name', e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-              placeholder="Ex: Realizar compra"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              placeholder="e.g., Complete challenge"
               required
             />
           </div>
 
           {/* Descrição */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Descrição
+            <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+              Description
             </label>
             <textarea
+              id="description"
               value={formData.description}
               onChange={(e) => handleChange('description', e.target.value)}
-              rows={3}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
-              placeholder="Descreva como o usuário pode realizar esta ação..."
+              rows={2}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              placeholder="Describe the action..."
             />
           </div>
 
           {/* Pontos */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Pontos *
+            <label htmlFor="points" className="block text-sm font-medium text-gray-700 mb-1">
+              Points <span className="text-red-500">*</span>
             </label>
-            <input
-              type="number"
-              value={formData.points}
-              onChange={(e) => handleChange('points', parseInt(e.target.value) || 0)}
-              min="1"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-              placeholder="100"
-              required
-            />
-            <p className="text-xs text-gray-500 mt-1">
-              Quantos pontos o usuário ganha ao realizar esta ação
-            </p>
+            <div className="relative">
+              <input
+                type="number"
+                id="points"
+                min="1"
+                step="1"
+                value={formData.points}
+                onChange={(e) => handleChange('points', parseInt(e.target.value) || 0)}
+                className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                placeholder="e.g., 100"
+                required
+              />
+              <span className="absolute left-3 top-2.5 text-gray-400">
+                <Target className="h-4 w-4" />
+              </span>
+            </div>
           </div>
 
           {/* Permitir Múltiplas */}
-          <div className="flex items-start space-x-3 p-4 bg-gray-50 rounded-lg">
+          <div className="flex items-center">
             <input
               type="checkbox"
               id="allowMultiple"
               checked={formData.allowMultiple}
               onChange={(e) => handleChange('allowMultiple', e.target.checked)}
-              className="w-5 h-5 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500 mt-0.5"
+              className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
             />
-            <label htmlFor="allowMultiple" className="flex-1">
-              <div className="flex items-center space-x-2 mb-1">
-                <Repeat className="h-4 w-4 text-indigo-600" />
-                <span className="text-sm font-medium text-gray-900">
-                  Permitir múltiplas execuções
-                </span>
-              </div>
-              <p className="text-xs text-gray-600">
-                Se marcado, o usuário pode realizar esta ação várias vezes e ganhar pontos em cada execução
-              </p>
+            <label htmlFor="allowMultiple" className="ml-2 block text-sm text-gray-700">
+              Allow multiple executions
             </label>
           </div>
 
           {/* Status Ativo */}
-          <div className="flex items-center space-x-3 p-4 bg-gray-50 rounded-lg">
+          <div className="flex items-center">
             <input
               type="checkbox"
               id="isActive"
               checked={formData.isActive}
               onChange={(e) => handleChange('isActive', e.target.checked)}
-              className="w-5 h-5 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+              className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
             />
-            <label htmlFor="isActive" className="flex-1">
-              <span className="text-sm font-medium text-gray-900">
-                Ação Ativa
-              </span>
-              <p className="text-xs text-gray-600 mt-0.5">
-                Apenas ações ativas podem ser realizadas pelos usuários
-              </p>
+            <label htmlFor="isActive" className="ml-2 block text-sm text-gray-700">
+              Action active
             </label>
           </div>
 
           {/* Info Box */}
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
             <h4 className="text-sm font-medium text-blue-900 mb-2">
-              {isEditMode ? 'ℹ️ Informações' : '💡 Exemplo de configuração'}
+              {isEditMode ? 'ℹ️ Information' : '💡 Example configuration'}
             </h4>
             {isEditMode ? (
               <ul className="text-sm text-blue-800 space-y-1">
-                <li>• As alterações serão aplicadas imediatamente</li>
-                <li>• Pontuações anteriores não serão afetadas</li>
-                <li>• Você pode desativar a ação a qualquer momento</li>
+                <li>• Changes will be applied immediately</li>
+                <li>• Previous scores will not be affected</li>
+                <li>• You can deactivate the action at any time</li>
               </ul>
             ) : (
               <div className="text-sm text-blue-800 space-y-1">
-                <p><strong>Ação única:</strong> "Cadastrar na newsletter" - 25 pontos (não permite múltiplas)</p>
-                <p><strong>Ação repetível:</strong> "Realizar compra" - 100 pontos (permite múltiplas)</p>
+                <p><strong>Single action:</strong> "Subscribe to newsletter" - 25 points (does not allow multiple)</p>
+                <p><strong>Repeatable action:</strong> "Make a purchase" - 100 points (allows multiple)</p>
               </div>
             )}
           </div>
 
           {/* Actions */}
-          <div className="flex items-center justify-end space-x-3 pt-4 border-t border-gray-200">
+          <div className="flex justify-end space-x-3">
             <button
               type="button"
               onClick={onClose}
-              className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+              className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              disabled={loading}
             >
-              Cancelar
+              Cancel
             </button>
             <button
               type="submit"
+              className="inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
               disabled={loading}
-              className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <>
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                  <span>{isEditMode ? 'Salvando...' : 'Criando...'}</span>
+                  <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  {isEditMode ? 'Saving...' : 'Creating...'}
                 </>
               ) : (
                 <>
-                  <Save className="h-4 w-4" />
-                  <span>{isEditMode ? 'Salvar Alterações' : 'Criar Ação'}</span>
+                  <Save className="h-4 w-4 mr-2" />
+                  {isEditMode ? 'Save Changes' : 'Create Action'}
                 </>
               )}
             </button>

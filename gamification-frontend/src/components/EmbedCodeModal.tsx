@@ -58,7 +58,7 @@ export default function EmbedCodeModal({ event, onClose }: EmbedCodeModalProps) 
           <div className="flex items-center space-x-3">
             <Code className="h-6 w-6 text-indigo-600" />
             <div>
-              <h2 className="text-2xl font-bold text-gray-900">Código de Incorporação</h2>
+              <h2 className="text-2xl font-bold text-gray-900">Embed Code</h2>
               <p className="text-sm text-gray-600 mt-1">{event.name}</p>
             </div>
           </div>
@@ -73,66 +73,68 @@ export default function EmbedCodeModal({ event, onClose }: EmbedCodeModalProps) 
         <div className="p-6 space-y-6">
           {/* Configuration */}
           <div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Configurações</h3>
+            <h3 className="text-lg font-medium text-gray-900 mb-4">Settings</h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Limit */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Quantidade de participantes
+                <label htmlFor="limit" className="block text-sm font-medium text-gray-700 mb-1">
+                  Participant limit
                 </label>
                 <input
                   type="number"
-                  value={config.limit}
-                  onChange={(e) => setConfig({ ...config, limit: parseInt(e.target.value) || 10 })}
+                  id="limit"
                   min="1"
                   max="100"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  value={config.limit}
+                  onChange={(e) => setConfig({ ...config, limit: parseInt(e.target.value) || 10 })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                 />
               </div>
 
               {/* Theme */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Tema
+                  Theme
                 </label>
                 <select
                   value={config.theme}
                   onChange={(e) => setConfig({ ...config, theme: e.target.value })}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                 >
-                  <option value="light">Claro</option>
-                  <option value="dark">Escuro</option>
-                  <option value="custom">Transparente</option>
+                  <option value="light">Light</option>
+                  <option value="dark">Dark</option>
+                  <option value="custom">Custom</option>
                 </select>
               </div>
 
               {/* Auto Refresh */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Atualização automática (segundos)
+                <label htmlFor="refresh" className="block text-sm font-medium text-gray-700 mb-1">
+                  Auto-refresh (seconds)
                 </label>
                 <input
                   type="number"
+                  id="refresh"
+                  min="0"
+                  max="3600"
                   value={config.refresh}
                   onChange={(e) => setConfig({ ...config, refresh: parseInt(e.target.value) || 0 })}
-                  min="0"
-                  step="10"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                  placeholder="0 = desativado"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  placeholder="0 to disable"
                 />
               </div>
 
               {/* Title */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Título personalizado (opcional)
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Custom title (optional)
                 </label>
                 <input
                   type="text"
                   value={config.title}
                   onChange={(e) => setConfig({ ...config, title: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                   placeholder="Ranking"
                 />
               </div>
@@ -148,7 +150,7 @@ export default function EmbedCodeModal({ event, onClose }: EmbedCodeModalProps) 
                   className="w-5 h-5 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
                 />
                 <span className="text-sm font-medium text-gray-700">
-                  Mostrar emails dos participantes
+                  Show participant emails
                 </span>
               </label>
             </div>
@@ -157,7 +159,7 @@ export default function EmbedCodeModal({ event, onClose }: EmbedCodeModalProps) 
           {/* URL Preview */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <h3 className="text-lg font-semibold text-gray-900">URL do Ranking</h3>
+              <h2 className="text-xl font-bold text-gray-900">Embed the Ranking</h2>
               <a
                 href={finalUrl}
                 target="_blank"
@@ -165,17 +167,18 @@ export default function EmbedCodeModal({ event, onClose }: EmbedCodeModalProps) 
                 className="flex items-center space-x-1 text-sm text-indigo-600 hover:text-indigo-700"
               >
                 <ExternalLink className="h-4 w-4" />
-                <span>Abrir em nova aba</span>
+                <span>Open in new tab</span>
               </a>
             </div>
             <div className="relative">
               <pre className="bg-gray-50 border border-gray-200 rounded-lg p-4 text-sm overflow-x-auto">
+                <p className="text-gray-600">Add the event ranking to your website</p>
                 <code className="text-gray-800">{finalUrl}</code>
               </pre>
               <button
                 onClick={() => copyToClipboard(finalUrl)}
                 className="absolute top-2 right-2 p-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-                title="Copiar URL"
+                title="Copy URL"
               >
                 {copied ? (
                   <Check className="h-4 w-4 text-green-600" />
@@ -189,7 +192,7 @@ export default function EmbedCodeModal({ event, onClose }: EmbedCodeModalProps) 
           {/* Iframe Code */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <h3 className="text-lg font-semibold text-gray-900">Código HTML (Iframe)</h3>
+              <h2 className="text-xl font-bold text-gray-900">HTML Code (Iframe)</h2>
               <button
                 onClick={() => copyToClipboard(iframeCode)}
                 className="flex items-center space-x-2 px-3 py-1.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm"
@@ -197,12 +200,12 @@ export default function EmbedCodeModal({ event, onClose }: EmbedCodeModalProps) 
                 {copied ? (
                   <>
                     <Check className="h-4 w-4" />
-                    <span>Copiado!</span>
+                    <span>Copied!</span>
                   </>
                 ) : (
                   <>
                     <Copy className="h-4 w-4" />
-                    <span>Copiar Código</span>
+                    <span>Copy Code</span>
                   </>
                 )}
               </button>
@@ -213,16 +216,13 @@ export default function EmbedCodeModal({ event, onClose }: EmbedCodeModalProps) 
           </div>
 
           {/* Info */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <h4 className="text-sm font-medium text-blue-900 mb-2">
-              💡 Como usar
-            </h4>
-            <ul className="text-sm text-blue-800 space-y-1">
-              <li>• Copie o código HTML acima</li>
-              <li>• Cole no seu site onde deseja exibir o ranking</li>
-              <li>• O ranking será atualizado automaticamente se configurado</li>
-              <li>• Ajuste width e height conforme necessário</li>
-            </ul>
+          <div className="mt-6 border-t border-gray-200 pt-4">
+            <h3 className="text-sm font-medium text-gray-900 mb-2">How to use</h3>
+            <ol className="list-decimal list-inside text-sm text-gray-600 space-y-1">
+              <li>Copy the HTML code above</li>
+              <li>Paste it into your website code where you want the ranking to appear</li>
+              <li>Adjust the settings as needed</li>
+            </ol>
           </div>
         </div>
 

@@ -23,21 +23,21 @@ export default function RegistrationForm({ onRegister, eventName }: Registration
       <div className="flex items-center space-x-3 mb-4">
         <UserPlus className="h-6 w-6 text-indigo-600" />
         <h3 className="text-lg font-semibold text-gray-900">
-          Registre-se em {eventName}
+          Register for {eventName}
         </h3>
       </div>
       
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Nome
+            Name
           </label>
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-            placeholder="Seu nome completo"
+            placeholder="Your full name"
             required
           />
         </div>
@@ -51,16 +51,16 @@ export default function RegistrationForm({ onRegister, eventName }: Registration
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-            placeholder="seu@email.com"
+            placeholder="your@email.com"
             required
           />
         </div>
         
         <button
           type="submit"
-          className="w-full bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors font-medium"
+          className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
         >
-          Registrar
+          Register
         </button>
       </form>
     </div>

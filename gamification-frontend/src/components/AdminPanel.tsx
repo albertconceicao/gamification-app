@@ -27,7 +27,7 @@ export default function AdminPanel() {
       console.log(data)
       setEvents(data.data || [])
     } catch (err) {
-      console.error('Erro ao carregar eventos:', err)
+      console.error('Error loading events:', err)
     } finally {
       setLoading(false)
     }
@@ -57,8 +57,8 @@ export default function AdminPanel() {
         )
       }
     } catch (err) {
-      console.error('Erro ao atualizar evento:', err)
-      alert('Erro ao atualizar status do evento')
+      console.error('Error updating event:', err)
+      alert('Error updating event status')
     }
   }
 
@@ -87,15 +87,15 @@ export default function AdminPanel() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Painel Administrativo</h2>
-          <p className="text-gray-600 mt-1">Gerencie eventos e configurações</p>
+          <h2 className="text-2xl font-bold text-gray-900">Admin Panel</h2>
+          <p className="text-gray-600 mt-1">Manage events and settings</p>
         </div>
         <button
           onClick={() => setShowCreateForm(true)}
           className="flex items-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium"
         >
           <Plus className="h-5 w-5" />
-          <span>Novo Evento</span>
+          <span>New Event</span>
         </button>
       </div>
 
@@ -104,30 +104,30 @@ export default function AdminPanel() {
         <div className="p-6 border-b border-gray-200">
           <h3 className="text-lg font-semibold text-gray-900 flex items-center">
             <Calendar className="h-5 w-5 mr-2 text-indigo-600" />
-            Eventos ({events.length})
+            Events ({events.length})
           </h3>
         </div>
 
         {loading ? (
           <div className="p-12 text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
-            <p className="text-gray-600 mt-4">Carregando eventos...</p>
+            <p className="text-gray-600 mt-4">Loading events...</p>
           </div>
         ) : events.length === 0 ? (
           <div className="p-12 text-center">
             <Calendar className="h-16 w-16 text-gray-300 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">
-              Nenhum evento criado
+              No events created
             </h3>
             <p className="text-gray-600 mb-6">
-              Comece criando seu primeiro evento
+              Start by creating your first event
             </p>
             <button
               onClick={() => setShowCreateForm(true)}
               className="inline-flex items-center space-x-2 px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium"
             >
               <Plus className="h-5 w-5" />
-              <span>Criar Primeiro Evento</span>
+              <span>Create First Event</span>
             </button>
           </div>
         ) : (
@@ -147,7 +147,7 @@ export default function AdminPanel() {
                             : 'bg-gray-100 text-gray-800'
                         }`}
                       >
-                        {event.isActive ? 'Ativo' : 'Inativo'}
+                        {event.isActive ? 'Active' : 'Inactive'}
                       </span>
                     </div>
                     
@@ -157,17 +157,17 @@ export default function AdminPanel() {
                     
                     <div className="flex items-center space-x-4 text-sm text-gray-500">
                       <span>
-                        Início: {new Date(event.startDate).toLocaleDateString('pt-BR')}
+                        Start: {new Date(event.startDate).toLocaleDateString('en-US')}
                       </span>
                       {event.endDate && (
                         <span>
-                          Término: {new Date(event.endDate).toLocaleDateString('pt-BR')}
+                          End: {new Date(event.endDate).toLocaleDateString('en-US')}
                         </span>
                       )}
                       {event.stats && (
                         <>
-                          <span>• {event.stats.totalUsers || 0} participantes</span>
-                          <span>• {event.stats.totalActions || 0} ações</span>
+                          <span>• {event.stats.totalUsers || 0} participants</span>
+                          <span>• {event.stats.totalActions || 0} actions</span>
                         </>
                       )}
                     </div>
@@ -178,7 +178,7 @@ export default function AdminPanel() {
                     <button
                       onClick={() => setEmbedCodeEvent(event)}
                       className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                      title="Código de incorporação"
+                      title="Embed Code"
                     >
                       <Code className="h-5 w-5" />
                     </button>
@@ -186,7 +186,7 @@ export default function AdminPanel() {
                     <button
                       onClick={() => setViewingRankingEvent(event)}
                       className="p-2 text-gray-400 hover:text-yellow-600 hover:bg-yellow-50 rounded-lg transition-colors"
-                      title="Ver ranking"
+                      title="View Ranking"
                     >
                       <Trophy className="h-5 w-5" />
                     </button>
@@ -194,7 +194,7 @@ export default function AdminPanel() {
                     <button
                       onClick={() => setManagingActionsEvent(event)}
                       className="p-2 text-gray-400 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
-                      title="Gerenciar ações"
+                      title="Manage Actions"
                     >
                       <Target className="h-5 w-5" />
                     </button>
@@ -206,7 +206,7 @@ export default function AdminPanel() {
                           ? 'text-green-600 hover:bg-green-50'
                           : 'text-gray-400 hover:bg-gray-100'
                       }`}
-                      title={event.isActive ? 'Desativar evento' : 'Ativar evento'}
+                      title={event.isActive ? 'Deactivate Event' : 'Activate Event'}
                     >
                       {event.isActive ? (
                         <ToggleRight className="h-5 w-5" />
@@ -218,14 +218,14 @@ export default function AdminPanel() {
                     <button
                       onClick={() => setEditingEvent(event)}
                       className="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
-                      title="Editar evento"
+                      title="Edit Event"
                     >
                       <Edit className="h-5 w-5" />
                     </button>
                     
                     <button
                       className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                      title="Excluir evento"
+                      title="Delete Event"
                     >
                       <Trash2 className="h-5 w-5" />
                     </button>

@@ -43,10 +43,10 @@ function App() {
               <Trophy className="h-8 w-8 text-indigo-600" />
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">
-                  Sistema de Gamificação
+                  Gamification System
                 </h1>
                 <p className="text-sm text-gray-500">
-                  Gerencie eventos e pontue ações
+                  Manage events and score actions
                 </p>
               </div>
             </div>
@@ -137,7 +137,7 @@ function App() {
       <footer className="bg-white border-t border-gray-200 mt-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <p className="text-center text-sm text-gray-500">
-            Sistema de Gamificação v2.0 - API + React Frontend
+            Gamification System v2.0 - API + React Frontend
           </p>
         </div>
       </footer>

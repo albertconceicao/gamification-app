@@ -27,7 +27,7 @@ export default function EventForm({ event, onClose, onEventSaved }: EventFormPro
     setError(null)
 
     if (!formData.name?.trim()) {
-      setError('Nome do evento é obrigatório')
+      setError('Event name is required')
       return
     }
 
@@ -43,14 +43,14 @@ export default function EventForm({ event, onClose, onEventSaved }: EventFormPro
         onClose()
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || `Erro ao ${isEditMode ? 'atualizar' : 'criar'} evento`)
-      console.error(`Erro ao ${isEditMode ? 'atualizar' : 'criar'} evento:`, err)
+      setError(err.response?.data?.message || `Error ${isEditMode ? 'updating' : 'creating'} event`)
+      console.error(`Error ${isEditMode ? 'updating' : 'creating'} event:`, err)
     } finally {
       setLoading(false)
     }
   }
 
-  const handleChange = (field: keyof CreateEventData, value: string | boolean) => {
+  const handleChange = (field: keyof CreateEventData, value: string | boolean | undefined) => {
     setFormData(prev => ({ ...prev, [field]: value }))
   }
 
@@ -58,160 +58,160 @@ export default function EventForm({ event, onClose, onEventSaved }: EventFormPro
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <div className="flex items-center space-x-3">
-            <Calendar className="h-6 w-6 text-indigo-600" />
+        <div className="p-6 border-b border-gray-200">
+          <div className="flex items-center justify-between w-full">
             <h2 className="text-2xl font-bold text-gray-900">
-              {isEditMode ? 'Editar Evento' : 'Criar Novo Evento'}
+              {isEditMode ? 'Edit Event' : 'New Event'}
             </h2>
+            <button
+              onClick={onClose}
+              className="text-gray-500 hover:text-gray-700 focus:outline-none"
+            >
+              <X className="h-6 w-6" />
+            </button>
           </div>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
-          >
-            <X className="h-6 w-6" />
-          </button>
-        </div>
+          </div>
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
           {/* Error Message */}
           {error && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start space-x-3">
-              <AlertCircle className="h-5 w-5 text-red-600 mt-0.5" />
-              <div>
-                <h3 className="text-sm font-medium text-red-800">Erro</h3>
-                <p className="text-sm text-red-700 mt-1">{error}</p>
-              </div>
+            <div className="mb-4 p-3 bg-red-50 text-red-700 text-sm rounded-md flex items-start">
+              <AlertCircle className="h-4 w-4 mr-2 mt-0.5 flex-shrink-0" />
+              <span>{error}</span>
             </div>
           )}
 
-          {/* Nome do Evento */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Nome do Evento *
+          {/* Event Name */}
+          <div className="mb-4">
+            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+              Event Name <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
+              id="name"
               value={formData.name}
               onChange={(e) => handleChange('name', e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-              placeholder="Ex: Black Friday 2024"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              placeholder="e.g., Hackathon 2023"
               required
             />
           </div>
 
-          {/* Descrição */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Descrição
+          {/* Description */}
+          <div className="mb-4">
+            <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+              Description
             </label>
             <textarea
+              id="description"
               value={formData.description}
               onChange={(e) => handleChange('description', e.target.value)}
-              rows={4}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
-              placeholder="Descreva o evento, suas regras e objetivos..."
+              rows={3}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              placeholder="Describe the event..."
             />
-            <p className="text-xs text-gray-500 mt-1">
-              Opcional - Ajuda os participantes a entenderem o evento
-            </p>
           </div>
 
-          {/* Datas */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Dates */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Data de Início
+              <label htmlFor="startDate" className="block text-sm font-medium text-gray-700 mb-1">
+                Start Date <span className="text-red-500">*</span>
               </label>
-              <input
-                type="date"
-                value={formData.startDate}
-                onChange={(e) => handleChange('startDate', e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-              />
-              <p className="text-xs text-gray-500 mt-1">Opcional</p>
+              <div className="relative">
+                <input
+                  type="date"
+                  id="startDate"
+                  value={formData.startDate}
+                  onChange={(e) => handleChange('startDate', e.target.value)}
+                  className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  required
+                />
+                <Calendar className="h-4 w-4 text-gray-400 absolute left-3 top-3" />
+              </div>
             </div>
-
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Data de Término
+              <label htmlFor="endDate" className="block text-sm font-medium text-gray-700 mb-1">
+                End Date (Optional)
               </label>
-              <input
-                type="date"
-                value={formData.endDate}
-                onChange={(e) => handleChange('endDate', e.target.value)}
-                min={formData.startDate || undefined}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-              />
-              <p className="text-xs text-gray-500 mt-1">Opcional</p>
+              <div className="relative">
+                <input
+                  type="date"
+                  id="endDate"
+                  value={formData.endDate || ''}
+                  onChange={(e) => handleChange('endDate', e.target.value || undefined)}
+                  min={formData.startDate}
+                  className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                />
+                <Calendar className="h-4 w-4 text-gray-400 absolute left-3 top-3" />
+              </div>
             </div>
           </div>
 
-          {/* Status Ativo */}
-          <div className="flex items-center space-x-3 p-4 bg-gray-50 rounded-lg">
+          {/* Status Active */}
+          <div className="flex items-center mb-6">
             <input
               type="checkbox"
               id="isActive"
               checked={formData.isActive}
               onChange={(e) => handleChange('isActive', e.target.checked)}
-              className="w-5 h-5 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+              className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
             />
-            <label htmlFor="isActive" className="flex-1">
-              <span className="text-sm font-medium text-gray-900">
-                Evento Ativo
-              </span>
-              <p className="text-xs text-gray-600 mt-0.5">
-                Eventos ativos permitem registro de usuários e pontuação
-              </p>
+            <label htmlFor="isActive" className="ml-2 block text-sm text-gray-700">
+              Active event
             </label>
           </div>
 
           {/* Info Box */}
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
             <h4 className="text-sm font-medium text-blue-900 mb-2">
-              {isEditMode ? 'ℹ️ Informações' : '💡 Próximos passos'}
+              {isEditMode ? 'ℹ️ Information' : '💡 Next Steps'}
             </h4>
             <ul className="text-sm text-blue-800 space-y-1">
               {isEditMode ? (
                 <>
-                  <li>• As alterações serão aplicadas imediatamente</li>
-                  <li>• Usuários já registrados não serão afetados</li>
-                  <li>• Você pode desativar o evento a qualquer momento</li>
+                  <li>• Changes will be applied immediately</li>
+                  <li>• Users already registered will not be affected</li>
+                  <li>• You can deactivate the event at any time</li>
                 </>
               ) : (
                 <>
-                  <li>• Após criar o evento, você poderá adicionar ações</li>
-                  <li>• Configure pontos e regras para cada ação</li>
-                  <li>• Ative o evento quando estiver pronto</li>
+                  <li>• After creating the event, you can add actions</li>
+                  <li>• Configure points and rules for each action</li>
+                  <li>• Activate the event when you're ready</li>
                 </>
               )}
             </ul>
           </div>
 
           {/* Actions */}
-          <div className="flex items-center justify-end space-x-3 pt-4 border-t border-gray-200">
+          <div className="flex justify-end space-x-3">
             <button
               type="button"
               onClick={onClose}
-              className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+              className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              disabled={loading}
             >
-              Cancelar
+              Cancel
             </button>
             <button
               type="submit"
+              className="inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
               disabled={loading}
-              className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <>
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                  <span>{isEditMode ? 'Salvando...' : 'Criando...'}</span>
+                  <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  {isEditMode ? 'Saving...' : 'Creating...'}
                 </>
               ) : (
                 <>
-                  <Save className="h-4 w-4" />
-                  <span>{isEditMode ? 'Salvar Alterações' : 'Criar Evento'}</span>
+                  <Save className="h-4 w-4 mr-2" />
+                  {isEditMode ? 'Save Changes' : 'Create Event'}
                 </>
               )}
             </button>

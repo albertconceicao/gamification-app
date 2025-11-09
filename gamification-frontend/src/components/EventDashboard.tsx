@@ -38,7 +38,7 @@ export default function EventDashboard({ event, currentUser, onUserUpdate }: Eve
       setActions(actionsData.data || [])
       setRanking(rankingData.data || [])
     } catch (err) {
-      console.error('Erro ao carregar dados do evento:', err)
+      console.error('Error loading event data:', err)
     } finally {
       setLoading(false)
     }
@@ -56,35 +56,35 @@ export default function EventDashboard({ event, currentUser, onUserUpdate }: Eve
         await loadEventData()
       }
     } catch (err: any) {
-      console.error('Erro ao registrar:', err)
-      alert(err.response?.data?.message || 'Erro ao registrar usuário')
+      console.error('Error registering:', err)
+      alert(err.response?.data?.message || 'Error registering user')
     }
   }
 
   const handlePerformAction = async (actionId: string) => {
     if (!currentUser) {
-      alert('Você precisa estar registrado para realizar ações')
+      alert('You need to be registered to perform actions')
       return
     }
 
     try {
       const response = await performAction(currentUser._id, actionId)
       if (response.success) {
-        // Atualizar dados do usuário
+        // Update user data
         const userData = await getUser(currentUser._id)
         if (userData.success) {
           onUserUpdate(userData.data)
           localStorage.setItem('currentUser', JSON.stringify(userData.data))
         }
         
-        // Recarregar ranking
+        // Reload ranking
         await loadEventData()
         
         alert(`✅ ${response.message}`)
       }
     } catch (err: any) {
-      console.error('Erro ao realizar ação:', err)
-      alert(err.response?.data?.message || 'Erro ao realizar ação')
+      console.error('Error performing action:', err)
+      alert(err.response?.data?.message || 'Error performing action')
     }
   }
 
@@ -107,12 +107,12 @@ export default function EventDashboard({ event, currentUser, onUserUpdate }: Eve
         <div className="flex items-center space-x-6 text-sm">
           <div className="flex items-center">
             <Clock className="h-4 w-4 mr-2" />
-            <span>Início: {new Date(event.startDate).toLocaleDateString('pt-BR')}</span>
+            <span>Starts: {new Date(event.startDate).toLocaleDateString('en-US')}</span>
           </div>
           {event.endDate && (
             <div className="flex items-center">
               <Clock className="h-4 w-4 mr-2" />
-              <span>Término: {new Date(event.endDate).toLocaleDateString('pt-BR')}</span>
+              <span>Ends: {new Date(event.endDate).toLocaleDateString('en-US')}</span>
             </div>
           )}
         </div>
@@ -123,7 +123,7 @@ export default function EventDashboard({ event, currentUser, onUserUpdate }: Eve
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-lg font-semibold text-gray-900">Seus Pontos</h3>
+              <h3 className="text-lg font-semibold text-gray-900">Your Points</h3>
               <p className="text-3xl font-bold text-indigo-600 mt-2">
                 {currentUser.points} pts
               </p>
@@ -143,26 +143,26 @@ export default function EventDashboard({ event, currentUser, onUserUpdate }: Eve
         <div>
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-xl font-bold text-gray-900">
-              Ações Disponíveis
+              Available Actions
             </h3>
             <button
               onClick={() => setShowCreateAction(true)}
               className="flex items-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm font-medium"
             >
               <Plus className="h-4 w-4" />
-              <span>Nova Ação</span>
+              <span>New Action</span>
             </button>
           </div>
           {actions.length === 0 ? (
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 text-center">
               <Star className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-600 mb-4">Nenhuma ação disponível ainda</p>
+              <p className="text-gray-600 mb-4">No actions available yet</p>
               <button
                 onClick={() => setShowCreateAction(true)}
                 className="inline-flex items-center space-x-2 px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium"
               >
                 <Plus className="h-5 w-5" />
-                <span>Criar Primeira Ação</span>
+                <span>Create First Action</span>
               </button>
             </div>
           ) : (

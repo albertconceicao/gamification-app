@@ -53,7 +53,7 @@ export const getEventRanking = async (eventId: string): Promise<RankingResponse>
 }
 
 // ========================================
-// AÇÕES
+// ACTIONS
 // ========================================
 
 export const getEventActions = async (eventId: string): Promise<ActionsResponse> => {
@@ -77,7 +77,7 @@ export const deleteAction = async (actionId: string): Promise<ApiResponse<any>> 
 }
 
 // ========================================
-// USUÁRIOS
+// USERS
 // ========================================
 
 export const registerUser = async (eventId: string, userData: RegisterUserData): Promise<UserResponse> => {
@@ -96,7 +96,7 @@ export const getUserHistory = async (userId: string): Promise<ApiResponse<any>> 
 }
 
 // ========================================
-// PONTUAÇÃO
+// SCORING
 // ========================================
 
 export const performAction = async (userId: string, actionId: string): Promise<PerformActionResponse> => {

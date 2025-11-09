@@ -22,7 +22,7 @@ export default function EventList({ onSelectEvent }: EventListProps) {
       const data = await getEvents()
       setEvents(data.data || [])
     } catch (err) {
-      setError('Erro ao carregar eventos')
+      setError('Error loading events')
       console.error(err)
     } finally {
       setLoading(false)
@@ -48,21 +48,15 @@ export default function EventList({ onSelectEvent }: EventListProps) {
   return (
     <div>
       <div className="mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">Eventos Disponíveis</h2>
-        <p className="text-gray-600 mt-1">
-          Selecione um evento para participar e ganhar pontos
-        </p>
+        <h2 className="text-2xl font-bold text-gray-900">Active Events</h2>
+        <p className="text-gray-600">Select an event to view details</p>
       </div>
 
       {events.length === 0 ? (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
-          <Target className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
-            Nenhum evento disponível
-          </h3>
-          <p className="text-gray-600">
-            Aguarde novos eventos serem criados
-          </p>
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 text-center">
+          <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-gray-900 mb-2">No events found</h3>
+          <p className="text-gray-600">There are no active events at the moment.</p>
         </div>
       ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -90,19 +84,19 @@ export default function EventList({ onSelectEvent }: EventListProps) {
                 <div className="flex items-center text-sm text-gray-600">
                   <Calendar className="h-4 w-4 mr-2" />
                   <span>
-                    {new Date(event.startDate).toLocaleDateString('pt-BR')}
+                    {new Date(event.startDate).toLocaleDateString('en-US', { dateStyle: 'medium' })}
                   </span>
                 </div>
 
                 {event.stats && (
                   <>
-                    <div className="flex items-center text-sm text-gray-600">
-                      <Users className="h-4 w-4 mr-2" />
-                      <span>{event.stats.totalUsers || 0} participantes</span>
+                    <div className="flex items-center text-sm text-gray-500">
+                      <Users className="h-4 w-4 mr-1" />
+                      <span>{event.stats?.totalUsers || 0} participants</span>
                     </div>
-                    <div className="flex items-center text-sm text-gray-600">
-                      <Target className="h-4 w-4 mr-2" />
-                      <span>{event.stats.totalActions || 0} ações</span>
+                    <div className="flex items-center text-sm text-gray-500">
+                      <Target className="h-4 w-4 mr-1" />
+                      <span>{event.stats?.totalActions || 0} actions</span>
                     </div>
                   </>
                 )}

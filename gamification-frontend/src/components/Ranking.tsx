@@ -24,12 +24,12 @@ export default function Ranking({ ranking, currentUserId }: RankingProps) {
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
       <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
         <Trophy className="h-6 w-6 text-indigo-600 mr-2" />
-        Ranking
+        Leaderboard
       </h3>
 
       {ranking.length === 0 ? (
         <p className="text-gray-600 text-center py-8">
-          Nenhum participante ainda
+          No participants yet
         </p>
       ) : (
         <div className="space-y-3">
@@ -45,7 +45,7 @@ export default function Ranking({ ranking, currentUserId }: RankingProps) {
               <div className="flex items-center space-x-4">
                 <div className="flex items-center justify-center w-10 h-10">
                   {getMedalIcon(index) || (
-                    <span className="text-lg font-bold text-gray-600">
+                    <span className="text-sm text-gray-500">
                       #{index + 1}
                     </span>
                   )}
@@ -55,7 +55,7 @@ export default function Ranking({ ranking, currentUserId }: RankingProps) {
                     {user.name}
                     {user._id === currentUserId && (
                       <span className="ml-2 text-xs text-indigo-600 font-semibold">
-                        (Você)
+                        (You)
                       </span>
                     )}
                   </p>
