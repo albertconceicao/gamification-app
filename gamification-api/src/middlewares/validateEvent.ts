@@ -15,6 +15,7 @@ export const validateEventExists = async (
 ): Promise<void> => {
   try {
     const { swoogoEventId } = req.body;
+    console.log({req});
 
     if (!swoogoEventId) {
       res.status(400).json({
