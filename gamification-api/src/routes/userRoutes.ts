@@ -29,7 +29,7 @@ router.get('/users', async (req: Request, res: Response) => {
 // POST /api/events/users/create - Registra um novo usuário em um evento
 router.post('/events/users/create', validateEventExists, async (req: Request, res: Response) => {
   try {
-    const { name, email, eventId } = req.body;
+    const { name, email, swoogoEventId } = req.body;
     const event = (req as any).event; // Vem do middleware
 
     if (!name || !email) {
@@ -40,7 +40,7 @@ router.post('/events/users/create', validateEventExists, async (req: Request, re
     }
 
     // Verifica se o usuário já existe neste evento
-    const existingUser = await User.findOne({ eventId, email });
+    const existingUser = await User.findOne({ eventId: event._id, email });
     if (existingUser) {
       return res.status(409).json({
         success: false,
@@ -49,7 +49,8 @@ router.post('/events/users/create', validateEventExists, async (req: Request, re
     }
 
     const user = await User.create({
-      eventId,
+      eventId: event._id,
+      swoogoEventId,
       name,
       email,
       points: 0
@@ -84,7 +85,7 @@ router.post('/users/:userId/actions/:actionId', async (req: Request, res: Respon
     }
 
     // Validar se o evento do usuário existe e está ativo
-    const event = await Event.findById(user.eventId);
+    const event = await Event.findById(user.eventId, { _id: 1, name: 1, isActive: 1 });
     if (!event) {
       return res.status(404).json({
         success: false,
