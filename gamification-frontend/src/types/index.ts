@@ -9,6 +9,7 @@ export interface Event {
   startDate: string
   endDate?: string
   isActive: boolean
+  swoogoEventId?: string
   createdAt: string
   updatedAt: string
   stats?: {
@@ -122,6 +123,7 @@ export interface CreateEventData {
   startDate?: string
   endDate?: string
   isActive?: boolean
+  swoogoEventId?: string
 }
 
 export interface CreateActionData {
@@ -138,6 +140,7 @@ export interface UpdateEventData {
   startDate?: string
   endDate?: string
   isActive?: boolean
+  swoogoEventId?: string
 }
 
 export interface UpdateActionData {

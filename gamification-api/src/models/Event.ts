@@ -6,6 +6,7 @@ export interface IEvent extends Document {
   startDate: Date;
   endDate?: Date;
   isActive: boolean;
+  swoogoEventId?: string; // Swoogo event ID for integration
   createdAt: Date;
   updatedAt: Date;
 }
@@ -30,6 +31,11 @@ const EventSchema: Schema = new Schema({
   isActive: {
     type: Boolean,
     default: true
+  },
+  swoogoEventId: {
+    type: String,
+    trim: true,
+    sparse: true
   }
 }, {
   timestamps: true

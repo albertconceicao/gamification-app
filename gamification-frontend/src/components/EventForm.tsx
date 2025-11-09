@@ -17,7 +17,8 @@ export default function EventForm({ event, onClose, onEventSaved }: EventFormPro
     description: event?.description || '',
     startDate: event?.startDate ? new Date(event.startDate).toISOString().split('T')[0] : '',
     endDate: event?.endDate ? new Date(event.endDate).toISOString().split('T')[0] : '',
-    isActive: event?.isActive ?? true
+    isActive: event?.isActive ?? true,
+    swoogoEventId: event?.swoogoEventId || ''
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -111,6 +112,24 @@ export default function EventForm({ event, onClose, onEventSaved }: EventFormPro
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
               placeholder="Describe the event..."
             />
+          </div>
+
+          {/* Swoogo Event ID */}
+          <div className="mb-4">
+            <label htmlFor="swoogoEventId" className="block text-sm font-medium text-gray-700 mb-1">
+              Swoogo Event ID
+            </label>
+            <input
+              type="text"
+              id="swoogoEventId"
+              value={formData.swoogoEventId || ''}
+              onChange={(e) => handleChange('swoogoEventId', e.target.value || undefined)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              placeholder="Enter Swoogo Event ID (if applicable)"
+            />
+            <p className="mt-1 text-xs text-gray-500">
+              If you're using Swoogo for event management, enter the Swoogo Event ID here.
+            </p>
           </div>
 
           {/* Dates */}

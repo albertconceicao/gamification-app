@@ -14,46 +14,49 @@ export const validateEventExists = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const eventId = req.params.eventId;
+    const swoogoEventId = req.body.eventId;
 
-    if (!eventId) {
+    if (!swoogoEventId) {
       res.status(400).json({
         success: false,
-        message: 'ID do evento é obrigatório'
+        message: 'Event ID is required'
       });
       return;
     }
 
-    const event = await Event.findById(eventId);
+    // Try to find event by ID first
+    let eventFound = await Event.findOne({ swoogoEventId });
 
-    if (!event) {
-      res.status(404).json({
-        success: false,
-        message: 'Evento não encontrado no banco de dados',
-        tip: 'Verifique se o ID do evento está correto'
-      });
-      return;
-    }
+    // If not found by ID, try to find by swoogoEventId
+      if (!eventFound) {
+        res.status(404).json({
+          success: false,
+          message: 'Event not found in database',
+          tip: 'Verify if the event ID or Swoogo Event ID is correct'
+        });
+        return;
+      }
 
-    if (!event.isActive) {
+
+    if (!eventFound.isActive) {
       res.status(400).json({
         success: false,
-        message: 'Este evento não está ativo',
-        eventName: event.name,
-        tip: 'Entre em contato com o administrador para ativar o evento'
+        message: 'Event is not active',
+        eventName: eventFound.name,
+        tip: 'Contact the administrator to activate the event'
       });
       return;
     }
 
     // Adiciona o evento ao request para uso posterior
-    (req as any).event = event;
+    (req as any).event = eventFound;
 
     next();
   } catch (error) {
-    console.error('Erro ao validar evento:', error);
+    console.error('Error validating event:', error);
     res.status(500).json({
       success: false,
-      message: 'Erro ao validar evento'
+      message: 'Error validating event'
     });
   }
 };
