@@ -157,7 +157,7 @@ router.post('/users/:userId/actions/:actionId', async (req: Request, res: Respon
       message: `${action.points} ponto(s) adicionado(s) com sucesso`,
       data: {
         userId: user._id,
-        name: user.name,
+        first_name: user.first_name,
         action: {
           id: action._id,
           name: action.name,
@@ -181,7 +181,7 @@ router.get('/users/:userId', async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
 
-    const user = await User.findById(userId).populate('eventId', 'name');
+    const user = await User.findById(userId).populate('eventId', 'first_name');
     
     if (!user) {
       return res.status(404).json({
@@ -235,7 +235,7 @@ router.get('/users/:userId/history', async (req: Request, res: Response) => {
       success: true,
       user: {
         id: user._id,
-        name: user.name,
+        first_name: user.first_name,
         totalPoints: user.points
       },
       count: history.length,
