@@ -23,6 +23,7 @@ export default function EventActionsManager({ event, onBack }: EventActionsManag
     try {
       setLoading(true)
       const data = await getEventActions(event._id)
+        console.log({data})
       setActions(data.data || [])
     } catch (err) {
       console.error('Error loading actions:', err)

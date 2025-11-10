@@ -14,7 +14,12 @@ import type {
   ApiResponse
 } from '../types'
 
-const API_URL = import.meta.env.VITE_API_URL;
+let API_URL: string;
+if(import.meta.env.VITE_ENV === 'dev') {
+  API_URL = 'http://localhost:3000/api'
+} else {
+  API_URL = import.meta.env.VITE_API_URL
+}
 
 const api = axios.create({
   baseURL: API_URL,

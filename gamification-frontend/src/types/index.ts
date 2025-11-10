@@ -129,6 +129,7 @@ export interface CreateEventData {
 export interface CreateActionData {
   name: string
   description?: string
+  handle: string
   points: number
   allowMultiple?: boolean
   isActive?: boolean
@@ -146,6 +147,7 @@ export interface UpdateEventData {
 export interface UpdateActionData {
   name?: string
   description?: string
+  handle?: string
   points?: number
   allowMultiple?: boolean
   isActive?: boolean

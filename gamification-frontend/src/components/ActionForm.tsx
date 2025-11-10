@@ -6,16 +6,18 @@ import type { CreateActionData, UpdateActionData, Action } from '../types'
 interface ActionFormProps {
   eventId: string
   eventName: string
+  handle: string
   action?: Action // Se fornecido, é modo edição; caso contrário, é criação
   onClose: () => void
   onActionSaved: () => void
 }
 
-export default function ActionForm({ eventId, eventName, action, onClose, onActionSaved }: ActionFormProps) {
+export default function ActionForm({ eventId, eventName, handle, action, onClose, onActionSaved }: ActionFormProps) {
   const isEditMode = !!action
   
   const [formData, setFormData] = useState<CreateActionData | UpdateActionData>({
     name: action?.name || '',
+    handle: action?.handle || '',
     description: action?.description || '',
     points: action?.points || 0,
     allowMultiple: action?.allowMultiple ?? true,
@@ -110,6 +112,22 @@ export default function ActionForm({ eventId, eventName, action, onClose, onActi
               onChange={(e) => handleChange('name', e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
               placeholder="e.g., Complete challenge"
+              required
+            />
+          </div>
+
+          {/* Handle */}
+          <div>
+            <label htmlFor="handle" className="block text-sm font-medium text-gray-700 mb-1">
+              Handle <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              id="handle"
+              value={formData.handle}
+              onChange={(e) => handleChange('handle', e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              placeholder="e.g., complete-challenge"
               required
             />
           </div>

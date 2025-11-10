@@ -7,18 +7,16 @@ import { validateEventExists } from '../middlewares/validateEvent';
 const router = Router();
 
 // GET /api/events/:eventId/actions - Lista todas as ações de um evento
-router.get('/events/:eventId/actions', validateEventExists, async (req: Request, res: Response) => {
+router.get('/events/:eventId/actions', async (req: Request, res: Response) => {
   try {
     const { eventId } = req.params;
-    const event = (req as any).event; // Vem do middleware
 
     const actions = await Action.find({ eventId }).sort({ points: -1 });
     
     res.json({
       success: true,
       event: {
-        id: event._id,
-        name: event.name
+        id: eventId
       },
       count: actions.length,
       data: actions
@@ -68,12 +66,10 @@ router.get('/actions/:actionId', async (req: Request, res: Response) => {
 });
 
 // POST /api/events/:eventId/actions - Cria uma nova ação para um evento
-router.post('/events/:eventId/actions', validateEventExists, async (req: Request, res: Response) => {
+router.post('/events/:eventId/actions', async (req: Request, res: Response) => {
   try {
     const { eventId } = req.params;
-    const { name, description, points, allowMultiple, isActive } = req.body;
-    const event = (req as any).event; // Vem do middleware
-
+    const { name, description, points, allowMultiple, isActive, handle } = req.body;
     // Validações
     if (!name) {
       return res.status(400).json({
@@ -92,6 +88,7 @@ router.post('/events/:eventId/actions', validateEventExists, async (req: Request
     const action = await Action.create({
       eventId,
       name,
+      handle,
       description,
       points,
       allowMultiple: allowMultiple !== undefined ? allowMultiple : false,
@@ -116,7 +113,7 @@ router.post('/events/:eventId/actions', validateEventExists, async (req: Request
 router.put('/actions/:actionId', async (req: Request, res: Response) => {
   try {
     const { actionId } = req.params;
-    const { name, description, points, allowMultiple, isActive } = req.body;
+    const { name, description, points, allowMultiple, isActive, handle } = req.body;
 
     const action = await Action.findById(actionId);
     
@@ -129,6 +126,7 @@ router.put('/actions/:actionId', async (req: Request, res: Response) => {
 
     // Atualizar campos
     if (name !== undefined) action.name = name;
+    if (handle !== undefined) action.handle = handle;
     if (description !== undefined) action.description = description;
     if (points !== undefined) {
       if (points < 0) {

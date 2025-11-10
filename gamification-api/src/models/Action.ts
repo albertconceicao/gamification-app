@@ -3,6 +3,7 @@ import mongoose, { Document, Schema } from 'mongoose';
 export interface IAction extends Document {
   eventId: mongoose.Types.ObjectId;
   name: string;
+  handle: string;
   description?: string;
   points: number;
   allowMultiple: boolean;
@@ -19,6 +20,11 @@ const ActionSchema: Schema = new Schema({
     index: true
   },
   name: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  handle: {
     type: String,
     required: true,
     trim: true
@@ -46,6 +52,6 @@ const ActionSchema: Schema = new Schema({
 });
 
 // Índice composto para buscar actions de um evento
-ActionSchema.index({ eventId: 1, isActive: 1 });
+ActionSchema.index({ eventId: 1, isActive: 1, handle: 1 }, { unique: true });
 
 export default mongoose.model<IAction>('Action', ActionSchema);
