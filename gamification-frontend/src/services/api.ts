@@ -104,8 +104,11 @@ export const getUserHistory = async (userId: string): Promise<ApiResponse<any>> 
 // SCORING
 // ========================================
 
-export const performAction = async (userId: string, actionId: string): Promise<PerformActionResponse> => {
-  const response = await api.post<PerformActionResponse>(`/users/${userId}/actions/${actionId}`)
+export const performAction = async (swoogoUserId: string, handle: string): Promise<PerformActionResponse> => {
+  const response = await api.post<PerformActionResponse>('/users/actions', {
+    swoogoUserId,
+    handle
+  })
   return response.data
 }
 

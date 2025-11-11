@@ -73,13 +73,20 @@ router.post('/events/users/create', validateEventExists, async (req: Request, re
   }
 });
 
-// POST /api/users/:userId/actions/:actionId - Usuário realiza uma ação
-router.post('/users/:userId/actions/:actionId', async (req: Request, res: Response) => {
+// POST /api/users/actions - Usuário realiza uma ação
+router.post('/users/actions', async (req: Request, res: Response) => {
   try {
-    const { userId, actionId } = req.params;
+    const { swoogoUserId, handle } = req.body;
 
-    // Buscar usuário
-    const user = await User.findById(userId);
+    if (!swoogoUserId || !handle) {
+      return res.status(400).json({
+        success: false,
+        message: 'swoogoUserId and handle are required in the request body'
+      });
+    }
+
+    // Buscar usuário pelo swoogoUserId
+    const user = await User.findOne({ swoogoUserId });
     if (!user) {
       return res.status(404).json({
         success: false,
@@ -106,12 +113,12 @@ router.post('/users/:userId/actions/:actionId', async (req: Request, res: Respon
       });
     }
 
-    // Buscar ação
-    const action = await Action.findById(actionId);
+    // Buscar ação pelo handle
+    const action = await Action.findOne({ handle });
     if (!action) {
       return res.status(404).json({
         success: false,
-        message: 'Action not found'
+        message: 'Action not found with the provided handle'
       });
     }
 
@@ -133,7 +140,10 @@ router.post('/users/:userId/actions/:actionId', async (req: Request, res: Respon
 
     // Verificar se o usuário já realizou esta ação
     if (!action.allowMultiple) {
-      const existingUserAction = await UserAction.findOne({ userId, actionId });
+      const existingUserAction = await UserAction.findOne({ 
+        userId: user._id, 
+        actionId: action._id 
+      });
       if (existingUserAction) {
         return res.status(400).json({
           success: false,
@@ -144,9 +154,9 @@ router.post('/users/:userId/actions/:actionId', async (req: Request, res: Respon
 
     // Registrar a ação do usuário
     const userAction = await UserAction.create({
-      userId,
+      userId: user._id,
       eventId: user.eventId,
-      actionId,
+      actionId: action._id,
       pointsEarned: action.points
     });
 
