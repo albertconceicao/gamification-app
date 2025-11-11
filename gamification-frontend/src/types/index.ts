@@ -23,6 +23,7 @@ export interface Action {
   eventId: string
   name: string
   description?: string
+  handle: string
   points: number
   allowMultiple: boolean
   isActive: boolean

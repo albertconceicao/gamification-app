@@ -17,7 +17,7 @@ export default function ActionForm({ eventId, eventName, handle, action, onClose
   
   const [formData, setFormData] = useState<CreateActionData | UpdateActionData>({
     name: action?.name || '',
-    handle: action?.handle || '',
+    handle: isEditMode ? action?.handle || '' : handle,
     description: action?.description || '',
     points: action?.points || 0,
     allowMultiple: action?.allowMultiple ?? true,
