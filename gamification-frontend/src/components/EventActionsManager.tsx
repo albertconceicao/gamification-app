@@ -220,6 +220,7 @@ export default function EventActionsManager({ event, onBack }: EventActionsManag
           eventId={event._id}
           eventName={event.name}
           action={editingAction || undefined}
+          handle={editingAction?.handle || ''}
           onClose={() => {
             setShowForm(false)
             setEditingAction(null)

@@ -6,7 +6,7 @@ import type { CreateActionData, UpdateActionData, Action } from '../types'
 interface ActionFormProps {
   eventId: string
   eventName: string
-  handle: string
+  handle?: string
   action?: Action // Se fornecido, é modo edição; caso contrário, é criação
   onClose: () => void
   onActionSaved: () => void
