@@ -48,8 +48,8 @@ export default function EmbedRanking() {
       setRanking(rankingData.data || [])
       setEvent(eventData.data)
     } catch (err) {
-      console.error('Erro ao carregar dados:', err)
-      setError('Erro ao carregar ranking')
+      console.error('Error loading data:', err)
+      setError('Error loading ranking')
     } finally {
       if (!silent) setLoading(false)
     }
@@ -111,7 +111,7 @@ export default function EmbedRanking() {
       <div className={`min-h-screen flex items-center justify-center ${currentTheme.bg}`}>
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
-          <p className={`mt-4 ${currentTheme.textSecondary}`}>Carregando ranking...</p>
+          <p className={`mt-4 ${currentTheme.textSecondary}`}>Loading ranking...</p>
         </div>
       </div>
     )
@@ -126,7 +126,7 @@ export default function EmbedRanking() {
             onClick={() => loadData()}
             className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
           >
-            Tentar Novamente
+            Try Again
           </button>
         </div>
       </div>
@@ -151,7 +151,7 @@ export default function EmbedRanking() {
             <div className="flex items-center justify-center space-x-2 mt-2">
               <RefreshCw className={`h-4 w-4 ${currentTheme.textSecondary}`} />
               <p className={`text-sm ${currentTheme.textSecondary}`}>
-                Atualização automática a cada {autoRefresh}s
+                Auto-refresh every {autoRefresh}s
               </p>
             </div>
           )}
@@ -161,7 +161,7 @@ export default function EmbedRanking() {
         {ranking.length === 0 ? (
           <div className={`text-center py-12 ${currentTheme.bg} rounded-lg border ${currentTheme.border}`}>
             <Trophy className={`h-16 w-16 mx-auto mb-4 ${currentTheme.textSecondary}`} />
-            <p className={currentTheme.textSecondary}>Nenhum participante ainda</p>
+            <p className={currentTheme.textSecondary}>No participants yet</p>
           </div>
         ) : (
           <div className={`rounded-lg border ${currentTheme.border} overflow-hidden`}>
@@ -214,7 +214,7 @@ export default function EmbedRanking() {
                       <p className={`font-bold text-indigo-600 ${isPodium ? 'text-3xl' : 'text-2xl'}`}>
                         {user.points}
                       </p>
-                      <p className={`text-xs ${currentTheme.textSecondary}`}>pontos</p>
+                      <p className={`text-xs ${currentTheme.textSecondary}`}>points</p>
                     </div>
                   </div>
                 </div>
@@ -226,7 +226,7 @@ export default function EmbedRanking() {
         {/* Footer Info */}
         {ranking.length > limit && (
           <p className={`text-center mt-4 text-sm ${currentTheme.textSecondary}`}>
-            Mostrando top {limit} de {ranking.length} participantes
+            Showing top {limit} of {ranking.length} participants
           </p>
         )}
       </div>
