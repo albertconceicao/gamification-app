@@ -74,9 +74,9 @@ router.post('/events/users/create', validateEventExists, async (req: Request, re
 });
 
 // POST /api/users/actions - Usuário realiza uma ação
-router.post('/users/actions', async (req: Request, res: Response) => {
+router.post('/users/actions/:swoogoUserId/:handle', async (req: Request, res: Response) => {
   try {
-    const { swoogoUserId, handle } = req.body;
+    const { swoogoUserId, handle } = req.params;
 
     if (!swoogoUserId || !handle) {
       return res.status(400).json({
