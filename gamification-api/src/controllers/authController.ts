@@ -1,136 +1,115 @@
+// src/controllers/authController.ts
 import { Request, Response } from 'express';
-import jwt from 'jsonwebtoken';
-import bcrypt from 'bcryptjs';
-import User, { IUser } from '../models/User';
-
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
-const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d';
-
-// Extend Express Request type to include user
-declare global {
-  namespace Express {
-    interface Request {
-      user?: IUser;
-    }
-  }
-}
-
-// Generate JWT token (moved to User model methods)
-
-// @desc    Register a new user
-// @route   POST /api/auth/register
-// @access  Public
-export const register = async (req: Request, res: Response) => {
-  try {
-    const { name, email, password, eventId } = req.body;
-
-    // Check if user already exists
-    const userExists = await User.findOne({ email });
-    if (userExists) {
-      return res.status(400).json({ message: 'User already exists' });
-    }
-
-    // Create user
-    const user = await User.create({
-      first_name: name,
-      email,
-      password,
-      eventId,
-      points: 0
-    });
-
-    // Generate token
-    const token = user.getSignedJwtToken();
-    
-    // Create user response without password
-    const { password: _, ...userResponse } = user.toObject();
-
-    res.status(201).json({
-      ...userResponse,
-      token,
-    });
-  } catch (error) {
-    console.error('Registration error:', error);
-    res.status(500).json({ message: 'Server error during registration' });
-  }
-};
+import { validationResult } from 'express-validator';
+import { User } from '../models/User';
+import { Attendee } from '../models/Attendee';
 
 // @desc    Authenticate user & get token
 // @route   POST /api/auth/login
 // @access  Public
 export const login = async (req: Request, res: Response) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const { email, password, type = 'user' } = req.body;
+
   try {
-    const { email, password } = req.body;
-
-    // Check for user email and include password
-    const user = await User.findOne({ email }).select('+password');
-    if (!user) {
-      return res.status(401).json({ message: 'Invalid credentials' });
+    let user;
+    if (type === 'admin') {
+      user = await User.findOne({ email }).select('+password');
+    } else {
+      user = await Attendee.findOne({ email }).select('+password');
     }
 
-    // Check password
-    const isMatch = await user.comparePassword(password);
-    if (!isMatch) {
-      return res.status(401).json({ message: 'Invalid credentials' });
+    if (!user || !(await user.comparePassword(password))) {
+      return res.status(401).json({ message: 'Invalid email or password' });
     }
 
-    // Generate token
-    const token = user.getSignedJwtToken();
-    
-    // Create user response without password
-    const { password: _, ...userResponse } = user.toObject();
+    // Update last login for admin users
+    if (type === 'admin') {
+      (user as any).lastLogin = new Date();
+      await user.save();
+    }
+
+    const token = user.generateAuthToken();
+    const userData = user.toObject();
+    delete userData.password;
 
     res.json({
-      ...userResponse,
+      success: true,
       token,
+      user: userData
     });
-  } catch (error) {
-    console.error('Login error:', error);
-    res.status(500).json({ message: 'Server error during login' });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
   }
 };
 
-// @desc    Get user profile
+// @desc    Register a new attendee
+// @route   POST /api/auth/register
+// @access  Public
+export const registerAttendee = async (req: Request, res: Response) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  try {
+    const { first_name, email, password, eventId } = req.body;
+
+    // Check if attendee already exists
+    const attendeeExists = await Attendee.findOne({ email });
+    if (attendeeExists) {
+      return res.status(400).json({ message: 'Attendee already exists' });
+    }
+
+    // Create attendee
+    const attendee = await Attendee.create({
+      first_name,
+      email,
+      password,
+      eventId
+    });
+
+    const token = attendee.generateAuthToken();
+    const attendeeData = attendee.toObject();
+    delete attendeeData.password;
+
+    res.status(201).json({
+      success: true,
+      token,
+      user: attendeeData
+    });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Get current logged in user
 // @route   GET /api/auth/me
 // @access  Private
 export const getMe = async (req: Request, res: Response) => {
   try {
-    const user = await User.findById(req.user?._id).select('-password');
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+    let user;
+    if ((req as any).user.role) {
+      // This is an admin/manager user
+      user = await User.findById((req as any).user.id).select('-password');
+    } else {
+      // This is an attendee
+      user = await Attendee.findById((req as any).user.id).select('-password');
     }
-    res.json(user);
-  } catch (error) {
-    console.error('Get profile error:', error);
-    res.status(500).json({ message: 'Server error' });
-  }
-};
-
-// @desc    Update user profile
-// @route   PUT /api/auth/me
-// @access  Private
-export const updateProfile = async (req: Request, res: Response) => {
-  try {
-    const updates = { ...req.body };
-    
-    // Don't allow updating password here
-    if (updates.password) {
-      delete updates.password;
-    }
-
-    const user = await User.findByIdAndUpdate(
-      req.user?._id,
-      { $set: updates },
-      { new: true, runValidators: true }
-    ).select('-password');
 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    res.json(user);
-  } catch (error) {
-    console.error('Update profile error:', error);
-    res.status(500).json({ message: 'Server error' });
+    res.status(200).json({
+      success: true,
+      data: user
+    });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
   }
 };
