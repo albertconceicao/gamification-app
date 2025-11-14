@@ -7,7 +7,7 @@ import { Label } from '../components/ui/label';
 import { AuthForm } from '../components/auth/AuthForm';
 
 export default function SignUpPage() {
-  const [name, setName] = useState('');
+  const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
@@ -27,7 +27,7 @@ export default function SignUpPage() {
     setIsLoading(true);
 
     try {
-      await signUp({ name, email, password, passwordConfirmation });
+      await signUp({ fullName, email, password, passwordConfirmation });
       navigate('/', { replace: true });
     } catch (err) {
       setError('Failed to create an account. Please try again.');
@@ -68,8 +68,8 @@ export default function SignUpPage() {
               id="name"
               type="text"
               placeholder="John Doe"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
               className="pl-10"
               required
             />

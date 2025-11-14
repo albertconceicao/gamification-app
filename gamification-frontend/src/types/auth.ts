@@ -16,11 +16,10 @@ export interface SignInData {
 }
 
 export interface SignUpData {
-  name: string;
+  fullName: string;
   email: string;
   password: string;
   passwordConfirmation: string;
-  eventId?: string;
 }
 
 export interface AuthContextType {

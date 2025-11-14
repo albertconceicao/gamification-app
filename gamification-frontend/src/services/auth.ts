@@ -21,11 +21,10 @@ export const signIn = async (data: SignInData): Promise<AuthUser> => {
 
 export const signUp = async (data: SignUpData): Promise<AuthUser> => {
   const response = await api.post<AuthResponse>('/auth/register', {
-    name: data.name,
+    fullName: data.fullName,
     email: data.email,
     password: data.password,
     passwordConfirmation: data.passwordConfirmation,
-    eventId: data.eventId
   });
   
   // Combine user data with token

@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
 export interface IUser extends Document {
-  username: string;
+  fullName: string;
   email: string;
   password: string;
   role: 'admin' | 'manager';
@@ -14,7 +14,7 @@ export interface IUser extends Document {
 }
 
 const userSchema = new Schema<IUser>({
-  username: { 
+  fullName: { 
     type: String, 
     required: true, 
     unique: true, 

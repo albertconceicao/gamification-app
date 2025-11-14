@@ -2,7 +2,6 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import { User } from '../models/User';
-import { Attendee } from '../models/Attendee';
 
 // @desc    Authenticate user & get token
 // @route   POST /api/auth/login
@@ -20,7 +19,7 @@ export const login = async (req: Request, res: Response) => {
     if (type === 'admin') {
       user = await User.findOne({ email }).select('+password');
     } else {
-      user = await Attendee.findOne({ email }).select('+password');
+      user = await User.findOne({ email }).select('+password');
     }
 
     if (!user || !(await user.comparePassword(password))) {
@@ -35,7 +34,7 @@ export const login = async (req: Request, res: Response) => {
 
     const token = user.generateAuthToken();
     const userData = user.toObject();
-    delete userData.password;
+    delete (userData as { password?: string }).password;
 
     res.json({
       success: true,
@@ -47,40 +46,39 @@ export const login = async (req: Request, res: Response) => {
   }
 };
 
-// @desc    Register a new attendee
+// @desc    Register a new user
 // @route   POST /api/auth/register
 // @access  Public
-export const registerAttendee = async (req: Request, res: Response) => {
+export const registerUser = async (req: Request, res: Response) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
 
   try {
-    const { first_name, email, password, eventId } = req.body;
+    const { fullName, email, password } = req.body;
 
-    // Check if attendee already exists
-    const attendeeExists = await Attendee.findOne({ email });
-    if (attendeeExists) {
-      return res.status(400).json({ message: 'Attendee already exists' });
+    // Check if user already exists
+    const userExists = await User.findOne({ email });
+    if (userExists) {
+      return res.status(400).json({ message: 'User already exists' });
     }
 
-    // Create attendee
-    const attendee = await Attendee.create({
-      first_name,
+    // Create user
+    const user = await User.create({
+      fullName,
       email,
       password,
-      eventId
     });
 
-    const token = attendee.generateAuthToken();
-    const attendeeData = attendee.toObject();
-    delete attendeeData.password;
+    const token = user.generateAuthToken();
+    const userData = user.toObject();
+    delete (userData as { password?: string }).password;
 
     res.status(201).json({
       success: true,
       token,
-      user: attendeeData
+      user: userData
     });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
@@ -98,7 +96,7 @@ export const getMe = async (req: Request, res: Response) => {
       user = await User.findById((req as any).user.id).select('-password');
     } else {
       // This is an attendee
-      user = await Attendee.findById((req as any).user.id).select('-password');
+      user = await User.findById((req as any).user.id).select('-password');
     }
 
     if (!user) {
