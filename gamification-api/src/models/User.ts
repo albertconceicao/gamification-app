@@ -1,73 +1,70 @@
+// src/models/User.ts
 import mongoose, { Document, Schema } from 'mongoose';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
 export interface IUser extends Document {
-  eventId: mongoose.Types.ObjectId;
-  first_name: string;
+  username: string;
   email: string;
   password: string;
-  role: 'user' | 'admin';
-  points: number;
-  registeredAt: Date;
-  lastAction?: Date;
-  createdAt: Date;
+  role: 'admin' | 'manager';
+  lastLogin?: Date;
   comparePassword(candidatePassword: string): Promise<boolean>;
-  getSignedJwtToken(): string;
+  generateAuthToken(): string;
 }
 
-const UserSchema: Schema = new Schema({
-  eventId: {
-    type: Schema.Types.ObjectId,
-    ref: 'Event',
-    required: true,
-    index: true
+const userSchema = new Schema<IUser>({
+  username: { 
+    type: String, 
+    required: true, 
+    unique: true, 
+    trim: true 
   },
-  first_name: {
-    type: String,
-    required: [true, 'Please add a name'],
-    trim: true
+  email: { 
+    type: String, 
+    required: true, 
+    unique: true, 
+    lowercase: true,
+    trim: true,
+    match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please enter a valid email']
   },
-  email: {
-    type: String,
-    required: [true, 'Please add an email'],
-    unique: true,
-    match: [
-      /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-      'Please add a valid email'
-    ],
-    lowercase: true
+  password: { 
+    type: String, 
+    required: true, 
+    minlength: 8, 
+    select: false 
   },
-  password: {
-    type: String,
-    required: [true, 'Please add a password'],
-    minlength: 6,
-    select: false // Don't return password by default
+  role: { 
+    type: String, 
+    enum: ['admin', 'manager'], 
+    default: 'manager' 
   },
-  role: {
-    type: String,
-    enum: ['user', 'admin'],
-    default: 'user'
-  },
-  points: {
-    type: Number,
-    default: 0,
-    min: 0
-  },
-  registeredAt: {
-    type: Date,
-    default: Date.now
-  },
-  lastAction: {
-    type: Date
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now
+  lastLogin: { 
+    type: Date 
   }
+}, { timestamps: true });
+
+userSchema.pre<IUser>('save', async function(next) {
+  if (!this.isModified('password')) return next();
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+  next();
 });
 
-// Índice composto para garantir email único por evento
-UserSchema.index({ eventId: 1, email: 1 }, { unique: true });
+userSchema.methods.comparePassword = async function(candidatePassword: string): Promise<boolean> {
+  return await bcrypt.compare(candidatePassword, this.password);
+};
 
-export default mongoose.model<IUser>('User', UserSchema);
+userSchema.methods.generateAuthToken = function(): string {
+  return jwt.sign(
+    { 
+      id: this._id, 
+      email: this.email,
+      role: this.role 
+    },
+    process.env.JWT_SECRET || 'your-secret-key',
+    { expiresIn: '1d' }
+  );
+};
+
+export const User = mongoose.model<IUser>('User', userSchema);
