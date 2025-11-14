@@ -5,6 +5,7 @@ import App from './App'
 import EmbedRanking from './pages/EmbedRanking'
 import SignInPage from './pages/SignInPage'
 import SignUpPage from './pages/SignUpPage'
+import ForgotPasswordPage from './pages/ForgotPasswordPage'
 import './index.css'
 import { AuthProvider } from './contexts/AuthContext'
 import ProtectedRoutes from './components/ProtectedRoutes'
@@ -16,6 +17,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           {/* Public routes */}
           <Route path="/signin" element={<SignInPage />} />
           <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           
           {/* Protected routes */}
           <Route element={<ProtectedRoutes />}>
