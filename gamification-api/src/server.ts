@@ -3,10 +3,11 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import { connectDatabase } from './config/database';
-import userRoutes from './routes/userRoutes';
+import attendeeRoutes from './routes/attendeeRoutes';
 import eventRoutes from './routes/eventRoutes';
 import actionRoutes from './routes/actionRoutes';
 import authRoutes from './routes/authRoutes';
+import userRoutes from './routes/userRoutes';
 
 // Carrega variáveis de ambiente
 dotenv.config();
@@ -44,6 +45,7 @@ app.get('/', (req: Request, res: Response) => {
 
 // Rotas da API
 app.use('/api/auth', authRoutes);
+app.use('/api/attendees', attendeeRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/actions', actionRoutes);
