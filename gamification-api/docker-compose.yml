@@ -1,29 +1,17 @@
-version: '3.8'
-
-services:
-  # API
   api:
-    build: .
-    container_name: points-api
+    build: 
+      context: ./gamification-api
+      dockerfile: Dockerfile.dev  # Use the development Dockerfile
+    container_name: gamification-api
     ports:
       - "3000:3000"
     environment:
-      - NODE_ENV=production
-      - PORT=3000
-      - MONGODB_URI=mongodb://mongo:27017/points-db
-    depends_on:
-      - mongo
-    restart: unless-stopped
-
-  # MongoDB
-  mongo:
-    image: mongo:7
-    container_name: points-mongo
-    ports:
-      - "27017:27017"
+      - NODE_ENV=development
+      - MONGODB_URI=mongodb://root:example@mongodb:27017/gamification?authSource=admin
+      - JWT_SECRET=your_jwt_secret_here
     volumes:
-      - mongo-data:/data/db
+      - ./gamification-api:/app
+      - /app/node_modules
+    depends_on:
+      - mongodb
     restart: unless-stopped
-
-volumes:
-  mongo-data:
