@@ -1,15 +1,37 @@
-import { Router } from 'express';
-import { register, login, getMe, updateProfile } from '../controllers/authController';
+// src/routes/authRoutes.ts
+import express from 'express';
+import { check } from 'express-validator';
+import {
+  login,
+  registerAttendee,
+  getMe
+} from '../controllers/authController';
 import { protect } from '../middlewares/auth';
 
-const router = Router();
+const router = express.Router();
 
 // Public routes
-router.post('/register', register);
-router.post('/login', login);
+router.post(
+  '/login',
+  [
+    check('email', 'Please include a valid email').isEmail(),
+    check('password', 'Password is required').exists()
+  ],
+  login
+);
 
-// Protected routes
+router.post(
+  '/register',
+  [
+    check('first_name', 'First name is required').not().isEmpty(),
+    check('email', 'Please include a valid email').isEmail(),
+    check('password', 'Please enter a password with 8 or more characters').isLength({ min: 8 }),
+    check('eventId', 'Event ID is required').not().isEmpty()
+  ],
+  registerAttendee
+);
+
+// Protected route
 router.get('/me', protect, getMe);
-router.put('/me', protect, updateProfile);
 
 export default router;

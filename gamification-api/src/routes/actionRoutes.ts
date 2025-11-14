@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express';
 import Action from '../models/Action';
 import Event from '../models/Event';
-import UserAction from '../models/UserAction';
+import { AttendeeAction } from '../models/AttendeeAction';
 import { validateEventExists } from '../middlewares/validateEvent';
 
 const router = Router();
@@ -45,7 +45,7 @@ router.get('/actions/:actionId', async (req: Request, res: Response) => {
     }
 
     // Contar quantas vezes a ação foi realizada
-    const timesPerformed = await UserAction.countDocuments({ actionId });
+    const timesPerformed = await AttendeeAction.countDocuments({ actionId });
 
     res.json({
       success: true,
@@ -171,7 +171,7 @@ router.delete('/actions/:actionId', async (req: Request, res: Response) => {
     }
 
     // Verificar se há registros de usuários que realizaram esta ação
-    const userActionsCount = await UserAction.countDocuments({ actionId });
+    const userActionsCount = await AttendeeAction.countDocuments({ actionId });
 
     if (userActionsCount > 0) {
       return res.status(400).json({
