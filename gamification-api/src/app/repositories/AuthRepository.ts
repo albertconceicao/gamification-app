@@ -1,9 +1,10 @@
-import { IUser } from '../models/User';
+import { User, IUser } from '../models/User';
 import { userRepository } from './UserRepository';
 
 export class AuthRepository {
   async loginUser(email: string, password: string): Promise<{ user: IUser | null; isValid: boolean }> {
-    const user = await userRepository.findByEmail(email);
+    // Find user with password field included (needed for password comparison)
+    const user = await User.findOne({ email }).select('+password');
     
     if (!user) {
       return { user: null, isValid: false };

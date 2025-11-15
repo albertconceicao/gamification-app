@@ -4,7 +4,7 @@ import express from 'express';
 
 import 'express-async-errors';
 
-import { cors } from '../app/middlewares/cors';
+import { corsMiddleware } from '../app/middlewares/cors';
 import router from '../app/routes/index';
 import logger from '../app/utils/logger';
 
@@ -18,11 +18,12 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(express.json());
 
-app.use(cors);
+app.use(corsMiddleware);
 
 connectDatabase();
 
-app.use(router);
+// Mount API routes at /api
+app.use('/api', router);
 
 app.use((error: any, request: any, response: any, next: any) => {
 	logger.error(`###### Error Handler ######`, error);

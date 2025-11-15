@@ -52,7 +52,7 @@ export default function Ranking({ ranking, currentUserId }: RankingProps) {
                 </div>
                 <div>
                   <p className="font-medium text-gray-900">
-                    {user.name}
+                    {user.first_name}
                     {user._id === currentUserId && (
                       <span className="ml-2 text-xs text-indigo-600 font-semibold">
                         (You)

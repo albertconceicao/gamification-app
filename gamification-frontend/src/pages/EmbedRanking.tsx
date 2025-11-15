@@ -195,7 +195,7 @@ export default function EmbedRanking() {
                       <div>
                         <div className="flex items-center space-x-2">
                           <p className={`font-bold ${isPodium ? 'text-xl' : 'text-lg'} ${currentTheme.text}`}>
-                            {user.name}
+                            {user.first_name}
                           </p>
                           {index === 0 && (
                             <Crown className="h-5 w-5 text-yellow-500 fill-yellow-500" />

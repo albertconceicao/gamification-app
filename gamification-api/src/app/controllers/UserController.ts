@@ -18,9 +18,8 @@ export class UserController {
       return res.status(StatusCode.BAD_REQUEST).json({ errors: errors.array() });
     }
 
-    const { username, email, password, role, fullName } = req.body;
+    const { email, password, role, fullName } = req.body;
     logger.debug('email: ', email);
-    logger.debug('username: ', username);
     logger.debug('role: ', role);
 
     try {
@@ -30,20 +29,18 @@ export class UserController {
       }
 
       // Check if user already exists
-      const existingUser = await userRepository.findByEmail(email) || 
-                          await userRepository.findByUsername(username);
+      const existingUser = await userRepository.findByEmail(email);
       
       if (existingUser) {
         logger.info('registerUser << End << - User already exists');
         return res.status(StatusCode.BAD_REQUEST).json({ 
           success: false,
-          message: 'User already exists with this email or username' 
+          message: 'User already exists with this email' 
         });
       }
 
       // Create user
       const user = await userRepository.createUser({
-        username,
         email,
         password,
         fullName,
@@ -97,16 +94,16 @@ export class UserController {
   async updateUser(req: Request, res: Response) {
     logger.info('updateUser >> Start >>');
 
-    const { username, email, role } = req.body;
+    const { email, role, fullName } = req.body;
     const userId = req.params.id;
     logger.debug('userId: ', userId);
-    logger.debug('updateData: ', { username, email, role });
+    logger.debug('updateData: ', { email, role, fullName });
 
     try {
       const updateData: Partial<IUser> = {};
-      if (username !== undefined) updateData.username = username;
       if (email !== undefined) updateData.email = email;
       if (role !== undefined) updateData.role = role;
+      if (fullName !== undefined) updateData.fullName = fullName;
 
       const updatedUser = await userRepository.updateUser(userId, updateData);
 

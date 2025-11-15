@@ -61,7 +61,7 @@ export default function EventRankingView({ event, onBack }: EventRankingViewProp
     const headers = ['Position', 'Name', 'Email', 'Points', 'Last Action']
     const rows = ranking.map((user, index) => [
       index + 1,
-      user.name,
+      user.first_name,
       user.email,
       user.points,
       user.lastAction ? new Date(user.lastAction).toLocaleString('pt-BR') : 'Nenhuma'
@@ -209,7 +209,7 @@ export default function EventRankingView({ event, onBack }: EventRankingViewProp
                         </span>
                       </div>
                       <h3 className="text-sm font-medium text-gray-900 truncate">
-                        {user.name}
+                        {user.first_name}
                       </h3>
                       <p className="text-xs text-gray-500 truncate">
                         {user.email}

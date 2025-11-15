@@ -13,10 +13,6 @@ export class UserRepository {
     return await User.findOne({ email });
   }
 
-  async findByUsername(username: string): Promise<IUser | null> {
-    return await User.findOne({ username });
-  }
-
   async findAll(): Promise<IUser[]> {
     return await User.find().select('-password');
   }

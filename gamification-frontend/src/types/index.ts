@@ -34,11 +34,13 @@ export interface Action {
 export interface User {
   _id: string
   eventId: string
-  name: string
+  first_name: string
   email: string
   points: number
   registeredAt: string
   lastAction?: string
+  swoogoUserId?: string
+  swoogoAttendeeId?: string
 }
 
 export interface UserAction {
@@ -97,8 +99,9 @@ export interface UserResponse extends ApiResponse<User> {
 export interface PerformActionResponse extends ApiResponse<any> {
   message: string
   data: {
-    userId: string
-    name: string
+    attendeeId: string
+    first_name: string
+    attendeeSwoogoId?: string
     action: {
       id: string
       name: string
