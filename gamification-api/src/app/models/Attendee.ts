@@ -8,6 +8,7 @@ export interface IAttendee extends Document {
   email: string;
   password: string;
   swoogoAttendeeId: string;
+  swoogoUserId?: string;
   points: number;
   registeredAt: Date;
   lastAction?: Date;
@@ -31,7 +32,6 @@ const AttendeeSchema: Schema = new Schema({
   email: {
     type: String,
     required: [true, 'Please add an email'],
-    unique: true,
     match: [
       /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
       'Please add a valid email'
@@ -47,7 +47,10 @@ const AttendeeSchema: Schema = new Schema({
   swoogoAttendeeId: {
     type: String,
     required: [true, 'Please add a swoogoAttendeeId'],
-    unique: true,
+    trim: true
+  },
+  swoogoUserId: {
+    type: String,
     trim: true
   },
   points: {
@@ -68,7 +71,30 @@ const AttendeeSchema: Schema = new Schema({
   }
 });
 
-// Índice composto para garantir email único por evento
+// Compound index to ensure email unique per event
 AttendeeSchema.index({ eventId: 1, email: 1 }, { unique: true });
 
+// Hash password before saving
+AttendeeSchema.pre<IAttendee>('save', async function(next) {
+  if (!this.isModified('password')) return next();
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+  next();
+});
+
+// Compare password method
+AttendeeSchema.methods.comparePassword = async function(candidatePassword: string): Promise<boolean> {
+  return await bcrypt.compare(candidatePassword, this.password);
+};
+
+// Generate JWT token
+AttendeeSchema.methods.getSignedJwtToken = function(): string {
+  return jwt.sign(
+    { id: this._id, email: this.email },
+    process.env.JWT_SECRET || 'your-secret-key',
+    { expiresIn: '30d' }
+  );
+};
+
 export const Attendee = mongoose.model<IAttendee>('Attendee', AttendeeSchema);
+

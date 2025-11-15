@@ -1,12 +1,7 @@
-// src/routes/authRoutes.ts
 import express from 'express';
 import { check } from 'express-validator';
-import {
-  login,
-  registerUser,
-  getMe
-} from '../controllers/authController';
-import { protect } from '../middlewares/auth';
+import { authController } from '../controllers/AuthController';
+import { authMiddleware as protect } from '../middlewares/auth.middleware';
 
 const router = express.Router();
 
@@ -17,7 +12,7 @@ router.post(
     check('email', 'Please include a valid email').isEmail(),
     check('password', 'Password is required').exists()
   ],
-  login
+  authController.login.bind(authController)
 );
 
 router.post(
@@ -27,10 +22,10 @@ router.post(
     check('email', 'Please include a valid email').isEmail(),
     check('password', 'Please enter a password with 8 or more characters').isLength({ min: 8 })
   ],
-  registerUser
+  authController.registerUser.bind(authController)
 );
 
 // Protected route
-router.get('/me', protect, getMe);
+router.get('/me', protect, authController.getProfile.bind(authController));
 
 export default router;

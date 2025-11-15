@@ -15,10 +15,12 @@ import type {
 } from '../types'
 
 let API_URL: string;
-if(import.meta.env.VITE_ENV === 'dev') {
-  API_URL = 'http://localhost:3000/api'
+if (import.meta.env.DEV) {
+  // In development, use the full URL to the backend
+  API_URL = 'http://localhost:3000/api';
 } else {
-  API_URL = import.meta.env.VITE_API_URL
+  // In production, use relative URL (handled by Nginx)
+  API_URL = '/api';
 }
 
 const api = axios.create({
@@ -91,12 +93,12 @@ export const registerUser = async (eventId: string, userData: RegisterUserData):
 }
 
 export const getUser = async (userId: string): Promise<UserResponse> => {
-  const response = await api.get<UserResponse>(`/users/${userId}`)
+  const response = await api.get<UserResponse>(`/attendees/${userId}`)
   return response.data
 }
 
 export const getUserHistory = async (userId: string): Promise<ApiResponse<any>> => {
-  const response = await api.get<ApiResponse<any>>(`/users/${userId}/history`)
+  const response = await api.get<ApiResponse<any>>(`/attendees/${userId}/history`)
   return response.data
 }
 
@@ -104,10 +106,10 @@ export const getUserHistory = async (userId: string): Promise<ApiResponse<any>> 
 // SCORING
 // ========================================
 
-export const performAction = async (swoogoUserId: string, handle: string): Promise<PerformActionResponse> => {
+export const performAction = async (attendeeId: string, actionId: string): Promise<PerformActionResponse> => {
   const response = await api.post<PerformActionResponse>('/users/actions', {
-    swoogoUserId,
-    handle
+    attendeeId,
+    actionId
   })
   return response.data
 }

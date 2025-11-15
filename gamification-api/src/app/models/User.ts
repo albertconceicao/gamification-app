@@ -1,9 +1,10 @@
-// src/models/User.ts
 import mongoose, { Document, Schema } from 'mongoose';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
 export interface IUser extends Document {
+  _id: mongoose.Types.ObjectId;
+  username: string;
   fullName: string;
   email: string;
   password: string;
@@ -17,7 +18,6 @@ const userSchema = new Schema<IUser>({
   fullName: { 
     type: String, 
     required: true, 
-    unique: true, 
     trim: true 
   },
   email: { 
@@ -27,6 +27,12 @@ const userSchema = new Schema<IUser>({
     lowercase: true,
     trim: true,
     match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please enter a valid email']
+  },
+  username: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true
   },
   password: { 
     type: String, 
@@ -44,6 +50,7 @@ const userSchema = new Schema<IUser>({
   }
 }, { timestamps: true });
 
+// Hash password before saving
 userSchema.pre<IUser>('save', async function(next) {
   if (!this.isModified('password')) return next();
   const salt = await bcrypt.genSalt(10);
@@ -51,10 +58,12 @@ userSchema.pre<IUser>('save', async function(next) {
   next();
 });
 
+// Method to compare password
 userSchema.methods.comparePassword = async function(candidatePassword: string): Promise<boolean> {
   return await bcrypt.compare(candidatePassword, this.password);
 };
 
+// Generate JWT token
 userSchema.methods.generateAuthToken = function(): string {
   return jwt.sign(
     { 

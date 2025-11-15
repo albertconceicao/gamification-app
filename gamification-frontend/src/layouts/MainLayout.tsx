@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { Trophy, Users, Target, Award, LogOut } from 'lucide-react';
+import { Trophy, Users, Target, LogOut } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -17,7 +17,7 @@ export default function MainLayout({
   children,
   currentView,
   selectedEvent,
-  onSelectEvent,
+  // onSelectEvent prop is available but not used in the current implementation
   onViewChange,
 }: MainLayoutProps) {
   const { user, signOut } = useAuth();
